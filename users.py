@@ -6,7 +6,7 @@ class Role(Enum):
     Organizer = 2
 
 class User():
-    def __init__(self, userName, email, password, logIn, photo):
+    def __init__(self, userName, email, password, logedIn):
         self.userName = userName
         self.email = email
         self.password = password

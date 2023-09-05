@@ -16,7 +16,7 @@ class Category(Enum):
     UNKNOWN = 6
 
 class Event():
-    def __init__(self, title, description, location, organizer, numAvailableSeats, category, status, photo):
+    def __init__(self, title, description, location, organizer, numAvailableSeats, category, status):
         self.title = title
         self.description = description
         self.location = location
