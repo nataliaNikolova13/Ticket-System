@@ -15,6 +15,10 @@ class Layout():
         self.logInFrame.pack() #fill=BOTH, expand=1
         self.registrtionFrame = Frame(self.root)
         self.registrtionFrame.pack() #fill=BOTH, expand=1
+        self.homeFrame = Frame(self.root)
+        self.homeFrame.pack()
+        self.createEventFrame = Frame(self.root)
+        self.createEventFrame.pack()
         # self.scrollBar()
 
     def createMenu(self):
@@ -24,6 +28,7 @@ class Layout():
 
         eventsMenu = Menu(menubar, tearoff=0)
 
+        eventsMenu.add_command(label="All events", command=self.homePage)
         eventsMenu.add_command(label="Concerts", command="")
         eventsMenu.add_command(label="Festivals", command="")
         eventsMenu.add_command(label="Seminars", command="")
@@ -31,17 +36,21 @@ class Layout():
         eventsMenu.add_command(label="Charities", command="")
         eventsMenu.add_command(label="Sport events", command="")
 
-        menubar.add_cascade(label="Events", menu=eventsMenu, command="")
-
+        menubar.add_cascade(label="Events", menu=eventsMenu)
+        menubar.add_cascade(label="Most Popular",command="")
         menubar.add_cascade(label="Recommendation",command="")
 
-        if self.controler.currentUser == False:
+        if self.controler.currentUserLogged == False:
             menubar.add_cascade(label="Log In",command=self.logIn)
         else:
             profileMenu = Menu(menubar, tearoff=0)
             profileMenu.add_command(label="View Profile", command="")
-            profileMenu.add_command(label="Log Out", command="")
+            profileMenu.add_command(label="Log Out", command=self.logOut)
             menubar.add_cascade(label="Profile", menu=profileMenu,command="")
+            if self.controler.currentRole.name == "Organizer":
+                profileMenu.add_command(label="Create event", command=self.createEvent)
+                profileMenu.add_command(label="View statistics", command="")
+
 
     def scrollBar(self):
         self.mainFrame = Frame(self.root)
@@ -60,6 +69,7 @@ class Layout():
 
     def logIn(self):
         self.registrtionFrame.destroy()
+        self.homeFrame.destroy()
         self.logInFrame = Frame(self.root)
         self.logInFrame.pack(fill=BOTH, expand=1)
         
@@ -81,14 +91,39 @@ class Layout():
         self.OrgRadionBtn = Radiobutton(self.logInFrame, text="Log In as an Organizer", variable=radio_var, value=2, font=('Arial', 10))
         self.OrgRadionBtn.grid(row=5, column=0, columnspan=2, sticky="nswe")
 
-        self.logInBtn = Button(self.logInFrame, width=20, text="Log In", font=('Arial', 10), command=lambda y = "":self.controler.passLogInInfo(self.entryUsername.get(), self.entryPassword.get(), radio_var.get()))
+        # self.logInBtn = Button(self.logInFrame, width=20, text="Log In", font=('Arial', 10), command=lambda y = "":self.controler.passLogInInfo(self.entryUsername.get(), self.entryPassword.get(), radio_var.get()))
+        self.logInBtn = Button(self.logInFrame, width=20, text="Log In", font=('Arial', 10), command=lambda y = "":self.clickLogInBtn(self.entryUsername, self.entryPassword, radio_var))
         self.logInBtn.grid(row=6, column=0, columnspan=2, pady=5)
         
         self.RegisterBtn = Button(self.logInFrame, width=20, text="Register", font=('Arial', 10), command=self.registration)
         self.RegisterBtn.grid(row=7, column=0, columnspan=2, pady=5)
 
+    def clickLogInBtn(self, entryUsername, entryPassword, radio_var):
+        userName = entryUsername.get()
+        password = entryPassword.get()
+        radio = radio_var.get()
+        if self.controler.passLogInInfo(userName, password, radio) == True:
+            self.homePage()
+            self.createMenu()
+        else:
+            errorLable = Label(self.logInFrame, text="User not found", font=('Arial', 10))
+            errorLable.grid(row=8, column=0, columnspan=2, sticky="nswe")    
+
+    
+    def clickRegisterBtn(self, entryUsername, entryEmail, entryPassword, radio_var):
+        # print("ok")
+        userName = entryUsername.get()
+        email = entryEmail.get()
+        password = entryPassword.get()
+        radio = radio_var.get()
+        self.controler.passRegistrationInfo(userName, email, password, radio)
+        self.homePage()
+        self.createMenu()
+
+
     def registration(self):
         self.logInFrame.destroy()
+        self.homeFrame.destroy()
         self.registrtionFrame = Frame(self.root)
         self.registrtionFrame.pack(fill=BOTH, expand=1)
         
@@ -114,8 +149,72 @@ class Layout():
         self.OrgRadionBtn = Radiobutton(self.registrtionFrame, text="Register as an Organizer", variable=radio_var, value=2, font=('Arial', 10))
         self.OrgRadionBtn.grid(row=8, column=0, columnspan=2, sticky="nswe")
 
-        self.RegisterBtn = Button(self.registrtionFrame, width=20, text="Register", font=('Arial', 10), command=lambda y = "":self.controler.passRegistrationInfo(self.entryUsername.get(), self.entryEmail.get(), self.entryPassword.get(), radio_var.get()))
+        # self.RegisterBtn = Button(self.registrtionFrame, width=20, text="Register", font=('Arial', 10), command=lambda :[self.controler.passRegistrationInfo(self.entryUsername.get(), self.entryEmail.get(), self.entryPassword.get(), radio_var.get()), self.homePage, self.createMenu])
+        self.RegisterBtn = Button(self.registrtionFrame, width=20, text="Register", font=('Arial', 10), command=lambda :self.clickRegisterBtn(self.entryUsername, self.entryEmail, self.entryPassword, radio_var))
         self.RegisterBtn.grid(row=9, column=0, columnspan=2, pady=5)
+
+
+    def homePage(self):
+        self.homeFrame.destroy()
+        self.registrtionFrame.destroy()
+        self.logInFrame.destroy()
+        self.homeFrame = Frame(self.root)
+        self.homeFrame.pack(fill=BOTH, expand=1) 
+        self.titleAllEvents = Label(self.homeFrame, text="All events", justify=CENTER, font=('Arial', 13))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+
+    def logOut(self):
+        self.controler.logOut()
+        self.homePage()
+        self.createMenu() 
+
+    def createEvent(self):
+        self.homeFrame.destroy()
+        self.registrtionFrame.destroy()
+        self.createEventFrame = Frame(self.root)
+        self.createEventFrame.pack(fill=BOTH, expand=1)
+        
+        self.titleCreateEvent = Label(self.createEventFrame, text="Create Event", justify=CENTER, font=('Arial', 13))
+        self.titleCreateEvent.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)
+
+        self.entryTitleEventLable = Label(self.createEventFrame, text="Enter Title", justify=CENTER, font=('Arial', 10))
+        self.entryTitleEventLable.grid(row=1, column=0, sticky="nswe", pady=5, padx=5)
+        self.entryTitleEvent = Entry(self.createEventFrame, bg="white")
+        self.entryTitleEvent.grid(row=1, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryDescriptionEventLable = Label(self.createEventFrame, text="Enter Description", justify=CENTER, font=('Arial', 10))
+        self.entryDescriptionEventLable.grid(row=2, column=0, sticky="nswe", pady=5, padx=5)
+        self.entryDescriptionEvent = Entry(self.createEventFrame, bg="white")
+        self.entryDescriptionEvent.grid(row=2, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryLocationEventLable = Label(self.createEventFrame, text="Enter Location", justify=CENTER, font=('Arial', 10))
+        self.entryLocationEventLable.grid(row=3, column=0, sticky="nswe", pady=5, padx=5)
+        self.entryLocationEvent = Entry(self.createEventFrame, bg="white")
+        self.entryLocationEvent.grid(row=3, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryDateEventLable = Label(self.createEventFrame, text="Enter Date (dd/mm/yyyy)", justify=CENTER, font=('Arial', 10))
+        self.entryDateEventLable.grid(row=4, column=0, sticky="nswe", pady=5, padx=5)
+        self.entryDateEvent = Entry(self.createEventFrame, bg="white")
+        self.entryDateEvent.grid(row=4, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryCapacityEventLable = Label(self.createEventFrame, text="Enter Capacity", justify=CENTER, font=('Arial', 10))
+        self.entryCapacityEventLable.grid(row=5, column=0, sticky="nswe", pady=5, padx=5)
+        self.entryCapacityEvent = Entry(self.createEventFrame, bg="white")
+        self.entryCapacityEvent.grid(row=5, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryMainCategoryEventLable = Label(self.createEventFrame, text="Enter Main Category", justify=CENTER, font=('Arial', 10))
+        self.entryMainCategoryEventLable.grid(row=6, column=0, sticky="nswe", pady=5, padx=5)
+        options = ["Concert", "Festivals", "Seminars", "Exhibitions", "Charity", "Sport"]
+        clicked = StringVar()
+        clicked.set("Concert")
+        drop = OptionMenu(self.createEventFrame, clicked , *options )
+        drop.grid(row=6, column=1, sticky="nswe", pady=5, padx=5)
+    
+        
+        
+        # self.category = category
+        # self.subcategories = []
+        # self.status = status    
         
 
 
