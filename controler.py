@@ -96,6 +96,35 @@ class Controler():
         connEvent.close()
         # print(result)
         return result
+    
+    def bookTicket(self, title):
+        if self.currentUser == False:
+            return False
+        buyer = self.currentUser.userName
+
+        connTickets = sqlite3.connect('tickets.db')
+        cursTickets = connTickets.cursor()
+
+        cursTickets.execute("insert into TICKETS VALUES(?, ?)", (buyer, title))
+        connTickets.commit()
+        connTickets.close()
+        self.updateEventInfo(title)
+        return True
+    
+    def updateEventInfo(self, title):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        # cursEvent.execute('SELECT * FROM EVENTS WHERE (Title = ?)',(self.title,))
+        
+        # entry = cursEvent.fetchone()
+        # seats = int(entry[8]) + 1
+        
+        cursEvent.execute("UPDATE EVENTS SET SeatsTaken=SeatsTaken+1 WHERE (Title = ?)", (title,))
+        # 'UPDATE EMPLOYEE SET AGE=AGE+1 WHERE SEX = 'M' '''
+
+        connEvent.commit()
+        connEvent.close()
+
 
 
    

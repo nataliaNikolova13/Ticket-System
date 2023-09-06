@@ -6,7 +6,8 @@ import dataBases
 
 class Status(Enum):
     PAST = 0
-    UPCOMING = 1
+    ONGOING = 1
+    UPCOMING = 2
 
 class Category(Enum):
     CONCERT = 0

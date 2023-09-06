@@ -47,3 +47,16 @@ tableEvents = """CREATE TABLE IF NOT EXISTS EVENTS(
 """
 cursEvent.execute(tableEvents)
 cursEvent.close()
+
+
+connTicketsBought = sqlite3.connect('tickets.db')
+cursTickets = connTicketsBought.cursor()
+
+tableTickets = """ CREATE TABLE IF NOT EXISTS TICKETS(
+            UserName CHAR(100) NOT NULL,
+            TITLE CHAR(100) NOT NULL
+)
+"""
+
+cursTickets.execute(tableTickets)
+cursTickets.close()

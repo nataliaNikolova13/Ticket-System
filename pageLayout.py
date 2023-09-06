@@ -234,10 +234,17 @@ class Layout():
         labSubCat.grid(row=5, sticky="w")
         labStatus.grid(row=6, sticky="w")
 
-        bookTicketsBtn = Button(self.moreInfoPage, text="Book Tickets", font=('Arial', 11), command="", width=40)
+        bookTicketsBtn = Button(self.moreInfoPage, text="Book Tickets", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator), width=40)
         bookTicketsBtn.grid(row = 12, sticky="nswe", pady=15)
 
         # print(title)
+    def bookTicket(self, title, org):
+        res = self.controler.bookTicket(title)
+        if res == False:
+            errorLable = Label(self.moreInfoPage, text="You have to logged in to book tickets")
+            errorLable.grid(row=14)    
+        else:
+            self.passMoreInfoBtn(title, org)    
 
     def logOut(self):
         self.controler.logOut()
@@ -293,9 +300,9 @@ class Layout():
 
         self.entryStatusEventLable = Label(self.createEventFrame, text="Choose status", justify=CENTER, font=('Arial', 10))
         self.entryStatusEventLable.grid(row=8, column=0, sticky="nswe", pady=5, padx=5)
-        optionsStatus = ["Past", "Upcoming"]
+        optionsStatus = ["Ongoing", "Upcoming"]
         clickedStatus = StringVar()
-        clickedStatus.set("Upcoming")
+        clickedStatus.set("Ongoing")
         dropStatus = OptionMenu(self.createEventFrame, clickedStatus , *optionsStatus )
         dropStatus.grid(row=8, column=1, sticky="nswe", pady=5, padx=5)
 
