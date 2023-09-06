@@ -79,39 +79,24 @@ class Controler():
         # print(category)title, description, location, date, month, year, organizer, numAvailableSeats, category, status, subcategories
         event.addToDataBase()
 
-    def printAllEvents(self, frame):
+    def printAllEventsGetData(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
         cursEvent.execute('SELECT * FROM EVENTS')
         result = cursEvent.fetchall()
-        count = 1
-        for i in range(0, len(result)):
-            # print(result[i])
-            titleLable = Label(frame, text=result[i][0], font=('Arial', 12), justify=LEFT)
-            titleLable.grid(row=count, sticky="w")
-            t = "Date: " + str(result[i][3]) + '.' + str(result[i][4]) + '.' + str(result[i][5])
-            dateLable = Label(frame, text=t)
-            dateLable.grid(row=count+1, sticky="w")
-            t = "Location: " + result[i][2]
-            locationLable = Label(frame, text=t)
-            locationLable.grid(row =count+2, sticky="w")
-            t = "Organizer: " + result[i][6]
-            orgLabel = Label(frame, text=t)
-            orgLabel.grid(row=count+3, sticky="w")
-            t = "Category: " + str(result[i][9]) 
-            categoryLabel = Label(frame, text=t)
-            categoryLabel.grid(row=count+4, sticky="w")
-            moreInfoBtn = Button(frame, text="More Information", font=('Arial', 10), width=20, command=lambda:self.passMoreInfoBtn(result[i][0], result[i][6], frame))
-            moreInfoBtn.grid(row=count+5, sticky="n", pady=10)
-            count = count + 10
-
         connEvent.close()
+        return result
 
 
-    # def passMoreInfoBtn(self, title, organizer, frame):
-    #     frame.destroy()
-    #     titleLable = Label(frame, text=title, font=('Arial', 12), justify=LEFT)
-    #     titleLable.grid(row=0, sticky="nswe")
+    def getAllInfoAboutEvent(self, title, organizator):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Title = ? AND Organizer = ?)', (title, organizator))
+        result = cursEvent.fetchone()
+        connEvent.close()
+        # print(result)
+        return result
+
 
    
 

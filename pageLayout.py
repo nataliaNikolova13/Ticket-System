@@ -1,12 +1,13 @@
 from tkinter import *
 from tkinter import ttk
 from controler import Controler
+import textwrap
 
 class Layout():
     def __init__(self, root):
         self.root = root
         self.root.title("Ticket System")
-        self.root.geometry("600x600")
+        self.root.geometry("600x650")
 
         self.controler = Controler()
 
@@ -19,6 +20,8 @@ class Layout():
         self.homeFrame.pack()
         self.createEventFrame = Frame(self.root)
         self.createEventFrame.pack()
+        self.moreInfoPage = Frame(self.root)
+        self.moreInfoPage.pack()
         # self.scrollBar()
 
     def createMenu(self):
@@ -71,10 +74,10 @@ class Layout():
     def logIn(self):
         self.destroyFrames()
         self.logInFrame = Frame(self.root)
-        self.logInFrame.pack(fill=BOTH, expand=1)
+        self.logInFrame.pack()
         
         self.titleLogIn = Label(self.logInFrame, text="Log In", justify=CENTER, font=('Arial', 13))
-        self.titleLogIn.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)
+        self.titleLogIn.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=(25, 10))
         radio_var = StringVar(value=1)
         userName = StringVar()
         password = StringVar()
@@ -124,10 +127,10 @@ class Layout():
     def registration(self):
         self.destroyFrames()
         self.registrtionFrame = Frame(self.root)
-        self.registrtionFrame.pack(fill=BOTH, expand=1)
+        self.registrtionFrame.pack()
         
         self.titleRegistrtion = Label(self.registrtionFrame, text="Registration", justify=CENTER, font=('Arial', 13))
-        self.titleRegistrtion.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)
+        self.titleRegistrtion.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=(25,10))
 
         self.entryUsernameLable = Label(self.registrtionFrame, text="Enter Username", justify=CENTER, font=('Arial', 10))
         self.entryUsernameLable.grid(row=1, column=0, sticky="nswe", pady=5, padx=5)
@@ -169,7 +172,72 @@ class Layout():
 
         self.titleAllEvents = Label(self.secondFrame, text="All events", justify=CENTER, font=('Arial', 13))
         self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
-        self.controler.printAllEvents(self.secondFrame)
+        self.printAllEvent(self.secondFrame)
+
+    def printAllEvent(self, frame):
+        result = self.controler.printAllEventsGetData()
+        count = 1
+        for i in range(0, len(result)):
+            titleLable = Label(frame, text=result[i][0], font=('Arial', 12), justify=LEFT)
+            titleLable.grid(row=count, sticky="w")
+            t = "Date: " + str(result[i][3]) + '.' + str(result[i][4]) + '.' + str(result[i][5])
+            dateLable = Label(frame, text=t)
+            dateLable.grid(row=count+1, sticky="w")
+            t = "Location: " + result[i][2]
+            locationLable = Label(frame, text=t)
+            locationLable.grid(row =count+2, sticky="w")
+            t = "Organizer: " + result[i][6]
+            orgLabel = Label(frame, text=t)
+            orgLabel.grid(row=count+3, sticky="w")
+            t = "Category: " + str(result[i][9]) 
+            categoryLabel = Label(frame, text=t)
+            categoryLabel.grid(row=count+4, sticky="w")
+            moreInfoBtn = Button(frame, text="More Information", font=('Arial', 10), width=20, command=lambda i = i:self.passMoreInfoBtn(result[i][0], result[i][6]))
+            moreInfoBtn.grid(row=count+5, sticky="n", pady=10)
+            count = count + 10    
+
+    def passMoreInfoBtn(self, title, organizator):
+        self.destroyFrames()    
+        self.moreInfoPage = Frame(self.root)
+        self.moreInfoPage.pack(fill=BOTH, expand=1)
+        titleLable = Label(self.moreInfoPage, text=title, font=('Arial', 13), justify=LEFT)
+        titleLable.grid(row=0, sticky="nw", pady=10)
+        result = self.controler.getAllInfoAboutEvent(title, organizator)
+        descr = "Description: " + result[1]
+        splitDescr = textwrap.wrap(descr, 80)
+        descr = '\n'.join(splitDescr)
+        labDescr = Label(self.moreInfoPage, text=descr, justify=LEFT, font=('Arial', 11))
+        location = "Location: " + result[2]
+        labLocation = Label(self.moreInfoPage, text=location, font=('Arial', 11))
+        date = "Date: " + str(result[3]) + '.' + str(result[4]) + '.' + str(result[5])
+        labDate = Label(self.moreInfoPage, text=date, font=('Arial', 11))
+        org = "Organizer: " + result[6]
+        labOrg = Label(self.moreInfoPage, text = org, font=('Arial', 11))
+        capacity = "Capacity: " + str(result[7])
+        labCapacity = Label(self.moreInfoPage, text = capacity, font=('Arial', 11))
+        takenSeats = "Seats sold: " + str(result[8])
+        labSeats = Label(self.moreInfoPage, text = takenSeats, font=('Arial', 11))
+        category = "Category: " + result[9]
+        labCat = Label(self.moreInfoPage, text = category, font=('Arial', 11))
+        subCat = "Subcategories: " + result[10]
+        labSubCat = Label(self.moreInfoPage, text = subCat, font=('Arial', 11))
+        status = "Status: " + result[11]
+        labStatus = Label(self.moreInfoPage, text = status, font=('Arial', 11))
+        
+        labDate.grid(row=1, sticky="w")
+        labDescr.grid(row=9, sticky="w", pady=10)
+        labLocation.grid(row=2, sticky="w")
+        labOrg.grid(row=3, sticky="w")
+        labCapacity.grid(row=7, sticky="w")
+        labSeats.grid(row=8, sticky="w")
+        labCat.grid(row=4, sticky="w")
+        labSubCat.grid(row=5, sticky="w")
+        labStatus.grid(row=6, sticky="w")
+
+        bookTicketsBtn = Button(self.moreInfoPage, text="Book Tickets", font=('Arial', 11), command="", width=40)
+        bookTicketsBtn.grid(row = 12, sticky="nswe", pady=15)
+
+        # print(title)
 
     def logOut(self):
         self.controler.logOut()
@@ -255,6 +323,7 @@ class Layout():
         self.registrtionFrame.destroy()
         self.homeFrame.destroy()
         self.createEventFrame.destroy()
+        self.moreInfoPage.destroy()
         
           
         
