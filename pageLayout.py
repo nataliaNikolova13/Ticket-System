@@ -53,7 +53,7 @@ class Layout():
 
 
     def scrollBar(self):
-        self.mainFrame = Frame(self.root)
+        self.mainFrame = Frame(self.ho)
         self.mainFrame.pack(fill=BOTH, expand=1)
         self.myCanvas = Canvas(self.mainFrame)
         self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
@@ -63,13 +63,13 @@ class Layout():
         self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+        # return self.secondFrame
 
     def searchBar(self):
         pass
 
     def logIn(self):
-        self.registrtionFrame.destroy()
-        self.homeFrame.destroy()
+        self.destroyFrames()
         self.logInFrame = Frame(self.root)
         self.logInFrame.pack(fill=BOTH, expand=1)
         
@@ -122,8 +122,7 @@ class Layout():
 
 
     def registration(self):
-        self.logInFrame.destroy()
-        self.homeFrame.destroy()
+        self.destroyFrames()
         self.registrtionFrame = Frame(self.root)
         self.registrtionFrame.pack(fill=BOTH, expand=1)
         
@@ -155,13 +154,22 @@ class Layout():
 
 
     def homePage(self):
-        self.homeFrame.destroy()
-        self.registrtionFrame.destroy()
-        self.logInFrame.destroy()
+        self.destroyFrames()
         self.homeFrame = Frame(self.root)
-        self.homeFrame.pack(fill=BOTH, expand=1) 
-        self.titleAllEvents = Label(self.homeFrame, text="All events", justify=CENTER, font=('Arial', 13))
+        self.homeFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.homeFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.homeFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        self.titleAllEvents = Label(self.secondFrame, text="All events", justify=CENTER, font=('Arial', 13))
         self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.controler.printAllEvents(self.secondFrame)
 
     def logOut(self):
         self.controler.logOut()
@@ -169,8 +177,7 @@ class Layout():
         self.createMenu() 
 
     def createEvent(self):
-        self.homeFrame.destroy()
-        self.registrtionFrame.destroy()
+        self.destroyFrames()
         self.createEventFrame = Frame(self.root)
         self.createEventFrame.pack(fill=BOTH, expand=1)
         
@@ -202,19 +209,54 @@ class Layout():
         self.entryCapacityEvent = Entry(self.createEventFrame, bg="white")
         self.entryCapacityEvent.grid(row=5, column=1, sticky="nswe", pady=5, padx=5)
 
-        self.entryMainCategoryEventLable = Label(self.createEventFrame, text="Enter Main Category", justify=CENTER, font=('Arial', 10))
+        self.entryMainCategoryEventLable = Label(self.createEventFrame, text="Choose Main Category", justify=CENTER, font=('Arial', 10))
         self.entryMainCategoryEventLable.grid(row=6, column=0, sticky="nswe", pady=5, padx=5)
         options = ["Concert", "Festivals", "Seminars", "Exhibitions", "Charity", "Sport"]
         clicked = StringVar()
         clicked.set("Concert")
         drop = OptionMenu(self.createEventFrame, clicked , *options )
         drop.grid(row=6, column=1, sticky="nswe", pady=5, padx=5)
+        # print(clicked.get())
     
+        self.entrySubCategoriesLable = Label(self.createEventFrame, text="Enter Subcategories", justify=CENTER, font=('Arial', 10))
+        self.entrySubCategoriesLable.grid(row=7, column=0, sticky="nswe", pady=5, padx=5)
+        self.entrySubCategories = Entry(self.createEventFrame, bg="white")
+        self.entrySubCategories.grid(row=7, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryStatusEventLable = Label(self.createEventFrame, text="Choose status", justify=CENTER, font=('Arial', 10))
+        self.entryStatusEventLable.grid(row=8, column=0, sticky="nswe", pady=5, padx=5)
+        optionsStatus = ["Past", "Upcoming"]
+        clickedStatus = StringVar()
+        clickedStatus.set("Upcoming")
+        dropStatus = OptionMenu(self.createEventFrame, clickedStatus , *optionsStatus )
+        dropStatus.grid(row=8, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.createEventBtn = Button(self.createEventFrame, width=20, text="Create Event", font=('Arial', 10), command=lambda :self.clickedCreateEventBtn(self.entryTitleEvent, self.entryDescriptionEvent, self.entryLocationEvent, self.entryDateEvent, self.entryCapacityEvent, clicked, self.entrySubCategories, clickedStatus))
+        self.createEventBtn.grid(row=9, column=0, columnspan=2, pady=5)
+
+    def clickedCreateEventBtn(self, entryTitleEvent, entryDescriptionEvent, entryLocationEvent, entryDateEvent, entryCapacityEvent, clicked, entrySubCategories, clickedStatus):
+        title = entryTitleEvent.get()
+        description = entryDescriptionEvent.get()
+        location = entryLocationEvent.get()
+        date = entryDateEvent.get()
+        capacity = entryCapacityEvent.get()
+        category = clicked.get()
+        subCategories = entrySubCategories.get()
+        status = clickedStatus.get()
+        # print
+
+        # self.controler.passRegistrationInfo(userName, email, password, radio)
+        self.controler.passCreateEventInfo(title, description, location, date, capacity, category, subCategories, status)
+        self.homePage()
+
+
+    def destroyFrames(self):
+        self.logInFrame.destroy()
+        self.registrtionFrame.destroy()
+        self.homeFrame.destroy()
+        self.createEventFrame.destroy()
         
-        
-        # self.category = category
-        # self.subcategories = []
-        # self.status = status    
+          
         
 
 

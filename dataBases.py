@@ -25,3 +25,25 @@ tableGenres = """ CREATE TABLE IF NOT EXISTS GENRES(
 
 cursGenres.execute(tableGenres)
 cursGenres.close()
+
+
+connEvent = sqlite3.connect('events.db')
+cursEvent = connEvent.cursor()
+
+tableEvents = """CREATE TABLE IF NOT EXISTS EVENTS(
+                Title CHAR(100) NOT NULL,
+                Description CHAR(1000) NOT NULL,
+                Location CHAR(100) NOT NULL,
+                Date INT, 
+                Month INT,
+                Year INT,
+                Organizer CHAR(100) NOT NULL,
+                NumAvailableSeats INT, 
+                SeatsTaken INT, 
+                Category CHAR(50) NOT NULL,
+                Subcategory CHAR(100) NOT NULL,
+                Status CHAR(50) NOT NULL
+)
+"""
+cursEvent.execute(tableEvents)
+cursEvent.close()
