@@ -22,6 +22,8 @@ class Layout():
         self.createEventFrame.pack()
         self.moreInfoPage = Frame(self.root)
         self.moreInfoPage.pack()
+        self.mostPopularFrame = Frame(self.root)
+        self.mostPopularFrame.pack()
         # self.scrollBar()
 
     def createMenu(self):
@@ -40,7 +42,7 @@ class Layout():
         eventsMenu.add_command(label="Sport events", command=self.sportPage)
 
         menubar.add_cascade(label="Events", menu=eventsMenu)
-        menubar.add_cascade(label="Most Popular",command="")
+        menubar.add_cascade(label="Most Popular",command=self.mostPopular)
         menubar.add_cascade(label="Recommendation",command="")
 
         if self.controler.currentUserLogged == False:
@@ -324,8 +326,50 @@ class Layout():
             categoryLabel = Label(frame, text=t)
             categoryLabel.grid(row=count+4, sticky="w")
             moreInfoBtn = Button(frame, text="More Information", font=('Arial', 10), width=20, command=lambda i = i:self.passMoreInfoBtn(result[i][0], result[i][6]))
-            moreInfoBtn.grid(row=count+5, sticky="n", pady=10)
+            moreInfoBtn.grid(row=count+5, sticky="w", pady=10)
             count = count + 10    
+
+
+    def mostPopular(self):
+        self.destroyFrames()
+        self.mostPopularFrame = Frame(self.root)
+        self.mostPopularFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.mostPopularFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.mostPopularFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        lableTitle = Label(self.secondFrame, text="Check out the most visited event of each category", font=('Arial', 14))
+        lableTitle.grid(row=0, pady=(10, 15))
+
+
+        result = []
+        bestConcerts = self.controler.getMostVisitedConcert()
+        bestFestival = self.controler.getMostVisitedFestival()
+        bestSeminar = self.controler.getMostVisitedSeminar()
+        bestExhibition = self.controler.getMostVisitedExhibitions()
+        bestCharity = self.controler.getMostVisitedCharity()
+        bestSport = self.controler.getMostVisitedSport()
+
+        if bestConcerts is not None:
+            result.append(bestConcerts)
+        if bestFestival is not None:
+            result.append(bestFestival) 
+        if bestSeminar is not None:
+            result.append(bestSeminar)
+        if bestExhibition is not None:
+            result.append(bestExhibition)
+        if bestCharity is not None:
+            result.append(bestCharity)
+        if bestSport is not None:
+            result.append(bestSport)   
+
+        self.printEvent(self.secondFrame, result)  
 
     def printAllEvent(self, frame):
         result = self.controler.printAllEventsGetData()
@@ -359,6 +403,7 @@ class Layout():
         category = "Category: " + result[9]
         labCat = Label(self.moreInfoPage, text = category, font=('Arial', 11))
         subCat = "Subcategories: " + result[10]
+        sub = result[10]
         labSubCat = Label(self.moreInfoPage, text = subCat, font=('Arial', 11))
         status = "Status: " + result[11]
         labStatus = Label(self.moreInfoPage, text = status, font=('Arial', 11))
@@ -373,12 +418,12 @@ class Layout():
         labSubCat.grid(row=5, sticky="w")
         labStatus.grid(row=6, sticky="w")
 
-        bookTicketsBtn = Button(self.moreInfoPage, text="Book Tickets", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft), width=40)
+        bookTicketsBtn = Button(self.moreInfoPage, text="Book Tickets", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft, sub), width=40)
         bookTicketsBtn.grid(row = 12, sticky="nswe", pady=15)
 
         # print(title)
-    def bookTicket(self, title, org, boolSpaceLeft):
-        res = self.controler.bookTicket(title)
+    def bookTicket(self, title, org, boolSpaceLeft, sub):
+        res = self.controler.bookTicket(title, sub)
         if res == False:
             errorLable = Label(self.moreInfoPage, text="You have to logged in to book tickets")
             errorLable.grid(row=14)    

@@ -101,7 +101,63 @@ class Controler():
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Festivals",))
         result = cursEvent.fetchall()
         connEvent.close()
+        # self.getMostVisitedFEstival()
         return result
+    
+    def getMostVisitedFestival(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Festivals",))
+        result = cursEvent.fetchone()
+        connEvent.close()
+        # print(result)
+        return result
+    
+    def getMostVisitedConcert(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Concert",))
+        result = cursEvent.fetchone()
+        connEvent.close()
+        # print(result)
+        return result
+    
+    def getMostVisitedSeminar(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Seminars",))
+        result = cursEvent.fetchone()
+        connEvent.close()
+        # print(result)
+        return result
+    
+    def getMostVisitedExhibitions(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Exhibitions",))
+        result = cursEvent.fetchone()
+        connEvent.close()
+        # print(result)
+        return result
+    
+    def getMostVisitedCharity(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Charity",))
+        result = cursEvent.fetchone()
+        connEvent.close()
+        # print(result)
+        return result
+    
+    def getMostVisitedSport(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Sport",))
+        result = cursEvent.fetchone()
+        connEvent.close()
+        # print(result)
+        return result
+    
     
     def printAllSeminars(self):
         connEvent = sqlite3.connect('events.db')
@@ -157,7 +213,7 @@ class Controler():
         # print(len(result))
         
     
-    def bookTicket(self, title):
+    def bookTicket(self, title, subCategories):
         if self.currentUser == False:
             return False
         buyer = self.currentUser.userName
@@ -172,7 +228,20 @@ class Controler():
         connTickets.commit()
         connTickets.close()
         self.updateEventInfo(title)
+        self.insertLikedGenres(buyer, subCategories)
         return True
+    
+    def insertLikedGenres(self, buyer, subCategories):
+        connGenres = sqlite3.connect('genres.db')
+        cursGenres = connGenres.cursor()
+
+        genres = subCategories.split(', ')
+
+        for i in genres:
+            cursGenres.execute("insert into GENRES VALUES(?, ?)", (buyer, i))
+
+        connGenres.commit()
+        connGenres.close()
     
     def updateEventInfo(self, title):
         connEvent = sqlite3.connect('events.db')
