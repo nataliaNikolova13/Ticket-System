@@ -388,6 +388,18 @@ class Layout():
                 errorLable.grid(row=14)
             else:
                 self.passMoreInfoBtn(title, org)    
+                self.confirmationWindow()
+
+    def confirmationWindow(self):
+        confWindow = Toplevel(self.moreInfoPage)
+        confWindow.title("Confirmation")
+        confWindow.geometry("250x150")
+        text = Label(confWindow, text="You have booked \n your ticket!", font=('Arial',12))
+        text2 = Label(confWindow, text="Have fun!", font=('Arial',12))
+        text.pack(pady=(20, 0))
+        text2.pack(pady=10)
+
+
 
     def logOut(self):
         self.controler.logOut()
