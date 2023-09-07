@@ -32,12 +32,12 @@ class Layout():
         eventsMenu = Menu(menubar, tearoff=0)
 
         eventsMenu.add_command(label="All events", command=self.homePage)
-        eventsMenu.add_command(label="Concerts", command="")
-        eventsMenu.add_command(label="Festivals", command="")
-        eventsMenu.add_command(label="Seminars", command="")
-        eventsMenu.add_command(label="Exhibitions", command="")
-        eventsMenu.add_command(label="Charities", command="")
-        eventsMenu.add_command(label="Sport events", command="")
+        eventsMenu.add_command(label="Concerts", command=self.concertPage)
+        eventsMenu.add_command(label="Festivals", command=self.festivalPage)
+        eventsMenu.add_command(label="Seminars", command=self.seminarsPage)
+        eventsMenu.add_command(label="Exhibitions", command=self.exhibitionsPage)
+        eventsMenu.add_command(label="Charities", command=self.charityPage)
+        eventsMenu.add_command(label="Sport events", command=self.sportPage)
 
         menubar.add_cascade(label="Events", menu=eventsMenu)
         menubar.add_cascade(label="Most Popular",command="")
@@ -174,8 +174,139 @@ class Layout():
         self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
         self.printAllEvent(self.secondFrame)
 
-    def printAllEvent(self, frame):
-        result = self.controler.printAllEventsGetData()
+    def concertPage(self):
+        self.destroyFrames()
+        self.homeFrame = Frame(self.root)
+        self.homeFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.homeFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.homeFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        self.titleAllEvents = Label(self.secondFrame, text="All concerts", justify=CENTER, font=('Arial', 13))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.printAllConcerts(self.secondFrame)    
+
+    def festivalPage(self):
+        self.destroyFrames()
+        self.homeFrame = Frame(self.root)
+        self.homeFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.homeFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.homeFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        self.titleAllEvents = Label(self.secondFrame, text="All Festivals", justify=CENTER, font=('Arial', 13))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.printAllFestivals(self.secondFrame)   
+
+    def seminarsPage(self):
+        self.destroyFrames()
+        self.homeFrame = Frame(self.root)
+        self.homeFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.homeFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.homeFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        self.titleAllEvents = Label(self.secondFrame, text="All Seminars", justify=CENTER, font=('Arial', 13))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.printAllSeminars(self.secondFrame)   
+
+    def exhibitionsPage(self):
+        self.destroyFrames()
+        self.homeFrame = Frame(self.root)
+        self.homeFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.homeFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.homeFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        self.titleAllEvents = Label(self.secondFrame, text="All Exhibitions", justify=CENTER, font=('Arial', 13))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.printAllExhibitions(self.secondFrame)      
+
+    def charityPage(self):
+        self.destroyFrames()
+        self.homeFrame = Frame(self.root)
+        self.homeFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.homeFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.homeFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        self.titleAllEvents = Label(self.secondFrame, text="All Charities", justify=CENTER, font=('Arial', 13))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.printAllCharities(self.secondFrame)   
+
+    def sportPage(self):
+        self.destroyFrames()
+        self.homeFrame = Frame(self.root)
+        self.homeFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.homeFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.homeFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        self.titleAllEvents = Label(self.secondFrame, text="All Sport Events", justify=CENTER, font=('Arial', 13))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.printAllSports(self.secondFrame) 
+
+    def printAllSports(self, frame):
+        result = self.controler.printAllSport()
+        self.printEvent(frame, result)               
+
+    def printAllCharities(self, frame):
+        result = self.controler.printAllCharity()
+        self.printEvent(frame, result)       
+
+    def printAllExhibitions(self, frame):
+        result = self.controler.printAllExhibitions()
+        self.printEvent(frame, result)
+    
+    def printAllSeminars(self, frame):
+        result = self.controler.printAllSeminars()
+        self.printEvent(frame, result)
+    
+    def printAllFestivals(self, frame):
+        result = self.controler.printAllFestivals()
+        self.printEvent(frame, result)
+
+    def printAllConcerts(self, frame):
+        result = self.controler.printAllConcerts()  
+        self.printEvent(frame, result)
+
+    def printEvent(self, frame, result):
         count = 1
         for i in range(0, len(result)):
             titleLable = Label(frame, text=result[i][0], font=('Arial', 12), justify=LEFT)
@@ -195,6 +326,11 @@ class Layout():
             moreInfoBtn = Button(frame, text="More Information", font=('Arial', 10), width=20, command=lambda i = i:self.passMoreInfoBtn(result[i][0], result[i][6]))
             moreInfoBtn.grid(row=count+5, sticky="n", pady=10)
             count = count + 10    
+
+    def printAllEvent(self, frame):
+        result = self.controler.printAllEventsGetData()
+        self.printEvent(frame, result)
+            
 
     def passMoreInfoBtn(self, title, organizator):
         self.destroyFrames()    
@@ -216,6 +352,9 @@ class Layout():
         capacity = "Capacity: " + str(result[7])
         labCapacity = Label(self.moreInfoPage, text = capacity, font=('Arial', 11))
         takenSeats = "Seats sold: " + str(result[8])
+        boolSpaceLeft = True
+        if result[8] >= result[7]:
+            boolSpaceLeft = False
         labSeats = Label(self.moreInfoPage, text = takenSeats, font=('Arial', 11))
         category = "Category: " + result[9]
         labCat = Label(self.moreInfoPage, text = category, font=('Arial', 11))
@@ -234,17 +373,21 @@ class Layout():
         labSubCat.grid(row=5, sticky="w")
         labStatus.grid(row=6, sticky="w")
 
-        bookTicketsBtn = Button(self.moreInfoPage, text="Book Tickets", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator), width=40)
+        bookTicketsBtn = Button(self.moreInfoPage, text="Book Tickets", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft), width=40)
         bookTicketsBtn.grid(row = 12, sticky="nswe", pady=15)
 
         # print(title)
-    def bookTicket(self, title, org):
+    def bookTicket(self, title, org, boolSpaceLeft):
         res = self.controler.bookTicket(title)
         if res == False:
             errorLable = Label(self.moreInfoPage, text="You have to logged in to book tickets")
             errorLable.grid(row=14)    
         else:
-            self.passMoreInfoBtn(title, org)    
+            if boolSpaceLeft == False:
+                errorLable = Label(self.moreInfoPage, text="There are no more tickets left")
+                errorLable.grid(row=14)
+            else:
+                self.passMoreInfoBtn(title, org)    
 
     def logOut(self):
         self.controler.logOut()

@@ -86,7 +86,54 @@ class Controler():
         result = cursEvent.fetchall()
         connEvent.close()
         return result
-
+    
+    def printAllConcerts(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Concert",))
+        result = cursEvent.fetchall()
+        connEvent.close()
+        return result
+    
+    def printAllFestivals(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Festivals",))
+        result = cursEvent.fetchall()
+        connEvent.close()
+        return result
+    
+    def printAllSeminars(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Seminars",))
+        result = cursEvent.fetchall()
+        connEvent.close()
+        return result
+    
+    def printAllExhibitions(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Exhibitions",))
+        result = cursEvent.fetchall()
+        connEvent.close()
+        return result
+    
+    def printAllCharity(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Charity",))
+        result = cursEvent.fetchall()
+        connEvent.close()
+        return result
+    
+    def printAllSport(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Sport",))
+        result = cursEvent.fetchall()
+        connEvent.close()
+        return result
 
     def getAllInfoAboutEvent(self, title, organizator):
         connEvent = sqlite3.connect('events.db')
@@ -97,10 +144,26 @@ class Controler():
         # print(result)
         return result
     
+    def checkIfSeatsSoldOut(self, title):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Title = ?)', (title,))
+        result = cursEvent.fetchone()
+        connEvent.close()
+        if result[7] == result[8]:
+            return True
+        else:
+            return False
+        # print(len(result))
+        
+    
     def bookTicket(self, title):
         if self.currentUser == False:
             return False
         buyer = self.currentUser.userName
+
+        if self.checkIfSeatsSoldOut(title) == True:
+            return False
 
         connTickets = sqlite3.connect('tickets.db')
         cursTickets = connTickets.cursor()
@@ -114,13 +177,8 @@ class Controler():
     def updateEventInfo(self, title):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        # cursEvent.execute('SELECT * FROM EVENTS WHERE (Title = ?)',(self.title,))
-        
-        # entry = cursEvent.fetchone()
-        # seats = int(entry[8]) + 1
         
         cursEvent.execute("UPDATE EVENTS SET SeatsTaken=SeatsTaken+1 WHERE (Title = ?)", (title,))
-        # 'UPDATE EMPLOYEE SET AGE=AGE+1 WHERE SEX = 'M' '''
 
         connEvent.commit()
         connEvent.close()
