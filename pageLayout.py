@@ -620,7 +620,12 @@ class Layout():
 
         lableTitle = Label(self.secondFrame, text="Check out what we have for you, based on you previous bookings", font=('Arial', 13))
         lableTitle.grid(row=0, pady=(10, 10))
-        self.controler.getTopGenres()
+        if self.controler.getTopGenres() == False:
+            errorLable = Label(self.secondFrame, justify=LEFT, text="Make your first booking, so that we can give you a recommendation", font=('Arial', 11))
+            errorLable.grid(row=1, sticky="nw", pady=10)
+        else: 
+            result = self.controler.getTopGenres()
+            self.printEvent(self.secondFrame, result)
 
     def destroyFrames(self):
         self.logInFrame.destroy()

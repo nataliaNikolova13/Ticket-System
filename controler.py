@@ -188,10 +188,10 @@ class Controler():
             connGenres.close
             self.getrecEvents(prefGenres)
 
-        return True
+        return self.getrecEvents(prefGenres)
 
     def getrecEvents(self, prefGenres):
-        print(prefGenres)
+        # print(prefGenres)
         userName = self.currentUser.userName
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
@@ -227,6 +227,7 @@ class Controler():
 
         connEvent.close()
         connTicketsBought.close()
+        return recEvents
         
     
     def printAllSeminars(self):
