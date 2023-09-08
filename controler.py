@@ -184,10 +184,50 @@ class Controler():
             for e in entry:
                 prefGenres.append(e[1])
 
-            print(prefGenres)
+            # print(prefGenres)
             connGenres.close
+            self.getrecEvents(prefGenres)
 
+        return True
 
+    def getrecEvents(self, prefGenres):
+        print(prefGenres)
+        userName = self.currentUser.userName
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        connTicketsBought = sqlite3.connect('tickets.db')
+        cursTickets = connTicketsBought.cursor()
+        allEventWithGivenGenres = []
+        for genre in prefGenres:
+            cursEvent.execute('SELECT * FROM EVENTS WHERE (Subcategory LIKE ?) ORDER BY SeatsTaken DESC', ('%' + genre + '%',))
+            events = cursEvent.fetchall()
+            for event in events:
+                if event not in allEventWithGivenGenres:
+                    allEventWithGivenGenres.append(event)
+        # print(allEventWithGivenGenres)
+
+        cursTickets.execute('SELECT Title FROM Tickets WHERE(UserName = ?)', (userName, ))
+        entry = cursTickets.fetchall()
+        allVisitedEvents = []
+        for i in entry:
+            allVisitedEvents.append(i[0])
+
+        # print(allVisitedEvents)
+        # allVisitedEvents = allVisitedEvents.strip("[](),")
+        recEvents = []
+
+        for i in range(0, len(allEventWithGivenGenres)):
+            # print(allEventWithGivenGenres[i][0])
+            # print(allVisitedEvents)  
+            if allEventWithGivenGenres[i][0] not in allVisitedEvents:
+                recEvents.append(allEventWithGivenGenres[i])
+
+        # print(allVisitedEvents)  
+        # print(recEvents)      
+
+        connEvent.close()
+        connTicketsBought.close()
+        
     
     def printAllSeminars(self):
         connEvent = sqlite3.connect('events.db')
