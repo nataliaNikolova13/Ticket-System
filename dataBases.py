@@ -4,14 +4,13 @@ connUsers = sqlite3.connect('users.db')
 cursUsers = connUsers.cursor()
 
 tableUsers = """ CREATE TABLE IF NOT EXISTS USERS(
-                    UserName CHAR(100) NOT NULL,
+                    UserName CHAR(100) NOT NULL PRIMARY KEY,
                     Email CHAR(100) NOT NULL,
                     Password CHAR(25) NOT NULL,
                     Role CHAR(25)
         
         )"""
-cursUsers.execute(tableUsers)
-connUsers.close()
+
 
 
 connGenres = sqlite3.connect('genres.db')
@@ -19,7 +18,12 @@ cursGenres = connGenres.cursor()
 
 tableGenres = """ CREATE TABLE IF NOT EXISTS GENRES(
             UserName CHAR(100) NOT NULL,
-            GENRES CHAR(59) NOT NULL
+            Genre CHAR(59) NOT NULL,
+            visited INT,
+            PRIMARY KEY (UserName, Genre),
+            FOREIGN KEY (UserName) REFERENCES USE (UserName) 
+            ON DELETE CASCADE ON UPDATE NO ACTION
+
 )
 """
 
@@ -31,7 +35,7 @@ connEvent = sqlite3.connect('events.db')
 cursEvent = connEvent.cursor()
 
 tableEvents = """CREATE TABLE IF NOT EXISTS EVENTS(
-                Title CHAR(100) NOT NULL,
+                Title CHAR(100) NOT NULL  PRIMARY KEY,
                 Description CHAR(1000) NOT NULL,
                 Location CHAR(100) NOT NULL,
                 Date INT, 
@@ -45,8 +49,9 @@ tableEvents = """CREATE TABLE IF NOT EXISTS EVENTS(
                 Status CHAR(50) NOT NULL
 )
 """
-cursEvent.execute(tableEvents)
-cursEvent.close()
+
+
+
 
 
 connTicketsBought = sqlite3.connect('tickets.db')
@@ -54,9 +59,21 @@ cursTickets = connTicketsBought.cursor()
 
 tableTickets = """ CREATE TABLE IF NOT EXISTS TICKETS(
             UserName CHAR(100) NOT NULL,
-            TITLE CHAR(100) NOT NULL
+            Title CHAR(100) NOT NULL,
+            numTickets INT,
+            PRIMARY KEY (UserName, Title),
+            FOREIGN KEY (UserName) REFERENCES USERS (UserName) 
+            ON DELETE CASCADE ON UPDATE NO ACTION,
+            FOREIGN KEY (Title) REFERENCES EVENTS (Title) 
+            ON DELETE CASCADE ON UPDATE NO ACTION
 )
 """
+
+cursUsers.execute(tableUsers)
+connUsers.close()
+
+cursEvent.execute(tableEvents)
+cursEvent.close()
 
 cursTickets.execute(tableTickets)
 cursTickets.close()

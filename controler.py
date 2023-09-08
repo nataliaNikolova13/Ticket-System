@@ -221,27 +221,56 @@ class Controler():
         if self.checkIfSeatsSoldOut(title) == True:
             return False
 
+        connUsers = sqlite3.connect('users.db')
+        cursUsers = connUsers.cursor()
+
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+
         connTickets = sqlite3.connect('tickets.db')
         cursTickets = connTickets.cursor()
 
-        cursTickets.execute("insert into TICKETS VALUES(?, ?)", (buyer, title))
+        cursTickets.execute('SELECT * FROM TICKETS WHERE (UserName = ? AND Title = ?)', (buyer, title))
+        entry = cursTickets.fetchone()
+        boolFirst = True
+        if entry is None:
+            cursTickets.execute("insert into TICKETS VALUES(?, ?, ?)", (buyer, title, 1))
+        else:
+            boolFirst = False
+            cursTickets.execute('UPDATE TICKETS SET numTickets=numTickets+1 WHERE (UserName = ? AND Title = ?)', (buyer, title)) 
+        
+        
         connTickets.commit()
+        
+        connUsers.close()
+        cursEvent.close()
         connTickets.close()
         self.updateEventInfo(title)
-        self.insertLikedGenres(buyer, subCategories)
+        self.insertLikedGenres(buyer, subCategories, boolFirst)
         return True
     
-    def insertLikedGenres(self, buyer, subCategories):
+    def insertLikedGenres(self, buyer, subCategories, boolFirst):
+        connUsers = sqlite3.connect('users.db')
+        cursUsers = connUsers.cursor()
         connGenres = sqlite3.connect('genres.db')
         cursGenres = connGenres.cursor()
+        
 
         genres = subCategories.split(', ')
 
-        for i in genres:
-            cursGenres.execute("insert into GENRES VALUES(?, ?)", (buyer, i))
+        if boolFirst == True:
+            for i in genres:
+                cursGenres.execute('SELECT * FROM GENRES WHERE (UserName = ? AND Genre = ?)', (buyer, i))
+                entry = cursGenres.fetchone()
+                if entry is None:
+                    cursGenres.execute('insert into GENRES VALUES (?, ?, ?)', (buyer, i, 1))
+                else:
+                    cursGenres.execute('UPDATE GENRES SET visited=visited+1 WHERE (UserName = ? AND Genre = ?)', (buyer, i))    
+                # cursGenres.execute("insert into GENRES VALUES(?, ?)", (buyer, i, 1))
 
         connGenres.commit()
         connGenres.close()
+        connUsers.close()
     
     def updateEventInfo(self, title):
         connEvent = sqlite3.connect('events.db')
