@@ -24,6 +24,9 @@ class Layout():
         self.moreInfoPage.pack()
         self.mostPopularFrame = Frame(self.root)
         self.mostPopularFrame.pack()
+        self.recFrame = Frame(self.root)
+        self.recFrame.pack()
+        self.secondFrame = Frame(self.root)
         # self.scrollBar()
 
     def createMenu(self):
@@ -44,7 +47,7 @@ class Layout():
 
         menubar.add_cascade(label="Events", menu=eventsMenu)
         menubar.add_cascade(label="Most Popular",command=self.mostPopular)
-        menubar.add_cascade(label="Recommendation",command="")
+        menubar.add_cascade(label="Recommendation",command=self.recPage)
 
         if self.controler.currentUserLogged == False:
             menubar.add_cascade(label="Log In",command=self.logIn)
@@ -52,10 +55,12 @@ class Layout():
             profileMenu = Menu(menubar, tearoff=0)
             profileMenu.add_command(label="View Profile", command="")
             profileMenu.add_command(label="Log Out", command=self.logOut)
-            menubar.add_cascade(label="Profile", menu=profileMenu,command="")
             if self.controler.currentRole.name == "Organizer":
+                menubar.add_cascade(label="Profile", menu=profileMenu,command="")
                 profileMenu.add_command(label="Create event", command=self.createEvent)
                 profileMenu.add_command(label="View statistics", command="")
+            else:
+                menubar.add_cascade(label="Profile", menu=profileMenu,command="")    
 
 
     def scrollBar(self):
@@ -599,6 +604,23 @@ class Layout():
         self.controler.passCreateEventInfo(title, description, location, date, capacity, category, subCategories, status)
         self.homePage()
 
+    def recPage(self):
+        self.destroyFrames()
+        self.recFrame = Frame(self.root)
+        self.recFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.recFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.recFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        lableTitle = Label(self.secondFrame, text="Check out what we have for you, based on you previous bookings", font=('Arial', 13))
+        lableTitle.grid(row=0, pady=(10, 10))
+        self.controler.getTopGenres()
 
     def destroyFrames(self):
         self.logInFrame.destroy()
@@ -606,6 +628,9 @@ class Layout():
         self.homeFrame.destroy()
         self.createEventFrame.destroy()
         self.moreInfoPage.destroy()
+        self.secondFrame.destroy()
+        self.mostPopularFrame.destroy()
+        self.recFrame.destroy()
         
           
         

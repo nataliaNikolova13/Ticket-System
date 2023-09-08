@@ -46,7 +46,9 @@ tableEvents = """CREATE TABLE IF NOT EXISTS EVENTS(
                 SeatsTaken INT, 
                 Category CHAR(50) NOT NULL,
                 Subcategory CHAR(100) NOT NULL,
-                Status CHAR(50) NOT NULL
+                Status CHAR(50) NOT NULL,
+                FOREIGN KEY (Organizer) REFERENCES USERS (UserName) 
+            ON DELETE CASCADE ON UPDATE NO ACTION
 )
 """
 

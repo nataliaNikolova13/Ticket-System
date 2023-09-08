@@ -167,6 +167,27 @@ class Controler():
         # print(result)
         return result
     
+    def getTopGenres(self):
+        if self.currentUser == False:
+            return False 
+        # user not logged
+        else:
+            userName = self.currentUser.userName
+
+            connGenres = sqlite3.connect('genres.db')
+            cursGenres = connGenres.cursor()
+
+            cursGenres.execute('SELECT * FROM GENRES WHERE (UserName = ?) ORDER BY visited DESC', (userName, ))
+            entry = cursGenres.fetchall()
+
+            prefGenres = []
+            for e in entry:
+                prefGenres.append(e[1])
+
+            print(prefGenres)
+            connGenres.close
+
+
     
     def printAllSeminars(self):
         connEvent = sqlite3.connect('events.db')
