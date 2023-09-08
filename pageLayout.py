@@ -466,7 +466,7 @@ class Layout():
 
         self.entryDescriptionEventLable = Label(self.createEventFrame, text="Enter Description", justify=CENTER, font=('Arial', 10))
         self.entryDescriptionEventLable.grid(row=2, column=0, sticky="nswe", pady=5, padx=5)
-        self.entryDescriptionEvent = Entry(self.createEventFrame, bg="white")
+        self.entryDescriptionEvent = Text(self.createEventFrame, bg="white", height=6, width=25)
         self.entryDescriptionEvent.grid(row=2, column=1, sticky="nswe", pady=5, padx=5)
 
         self.entryLocationEventLable = Label(self.createEventFrame, text="Enter Location", justify=CENTER, font=('Arial', 10))
@@ -511,7 +511,7 @@ class Layout():
 
     def clickedCreateEventBtn(self, entryTitleEvent, entryDescriptionEvent, entryLocationEvent, entryDateEvent, entryCapacityEvent, clicked, entrySubCategories, clickedStatus):
         title = entryTitleEvent.get()
-        description = entryDescriptionEvent.get()
+        description = entryDescriptionEvent.get("1.0",END)
         location = entryLocationEvent.get()
         date = entryDateEvent.get()
         capacity = entryCapacityEvent.get()
