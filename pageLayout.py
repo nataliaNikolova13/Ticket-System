@@ -40,6 +40,7 @@ class Layout():
         eventsMenu.add_command(label="Exhibitions", command=self.exhibitionsPage)
         eventsMenu.add_command(label="Charities", command=self.charityPage)
         eventsMenu.add_command(label="Sport events", command=self.sportPage)
+        eventsMenu.add_command(label="Theater", command=self.theaterPage)
 
         menubar.add_cascade(label="Events", menu=eventsMenu)
         menubar.add_cascade(label="Most Popular",command=self.mostPopular)
@@ -284,6 +285,28 @@ class Layout():
         self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
         self.printAllSports(self.secondFrame) 
 
+    def theaterPage(self):
+        self.destroyFrames()
+        self.homeFrame = Frame(self.root)
+        self.homeFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.homeFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.homeFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        self.titleAllEvents = Label(self.secondFrame, text="All Theater & Art Events", justify=CENTER, font=('Arial', 13))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.printAllTheater(self.secondFrame) 
+
+    def printAllTheater(self, frame):
+        result = self.controler.printAllTheater()
+        self.printEvent(frame, result)  
+
     def printAllSports(self, frame):
         result = self.controler.printAllSport()
         self.printEvent(frame, result)               
@@ -344,8 +367,8 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        lableTitle = Label(self.secondFrame, text="Check out the most visited event of each category", font=('Arial', 14))
-        lableTitle.grid(row=0, pady=(10, 15))
+        lableTitle = Label(self.secondFrame, text="Check out the most visited event of each category", font=('Arial', 13))
+        lableTitle.grid(row=0, pady=(10, 10))
 
 
         result = []
@@ -355,21 +378,57 @@ class Layout():
         bestExhibition = self.controler.getMostVisitedExhibitions()
         bestCharity = self.controler.getMostVisitedCharity()
         bestSport = self.controler.getMostVisitedSport()
+        bestTheater = self.controler.getMostVisitedTheater()
+
+        lst = []
 
         if bestConcerts is not None:
+            lst.append("Concert")
             result.append(bestConcerts)
         if bestFestival is not None:
+            lst.append("Festival")
             result.append(bestFestival) 
         if bestSeminar is not None:
+            lst.append("Seminar")
             result.append(bestSeminar)
         if bestExhibition is not None:
+            lst.append("Exhibition")
             result.append(bestExhibition)
         if bestCharity is not None:
+            lst.append("Charity")
             result.append(bestCharity)
         if bestSport is not None:
+            lst.append("Sport event")
             result.append(bestSport)   
+        if bestTheater is not None:
+            lst.append("Theater & Art")
+            result.append(bestTheater)     
 
-        self.printEvent(self.secondFrame, result)  
+        self.printEventWithAddLable(self.secondFrame, result, lst)  
+
+    def printEventWithAddLable(self, frame, result, lst):
+        count = 2
+        for i in range(0, len(result)):
+            cat = "The most visited event in " + lst[i]
+            categoryLable = Label(frame, text=cat, font=('Arial', 12), justify=LEFT)
+            categoryLable.grid(row=count-1, sticky="w", pady=5)
+            titleLable = Label(frame, text=result[i][0], font=('Arial', 12), justify=LEFT)
+            titleLable.grid(row=count, sticky="w")
+            t = "Date: " + str(result[i][3]) + '.' + str(result[i][4]) + '.' + str(result[i][5])
+            dateLable = Label(frame, text=t)
+            dateLable.grid(row=count+1, sticky="w")
+            t = "Location: " + result[i][2]
+            locationLable = Label(frame, text=t)
+            locationLable.grid(row =count+2, sticky="w")
+            t = "Organizer: " + result[i][6]
+            orgLabel = Label(frame, text=t)
+            orgLabel.grid(row=count+3, sticky="w")
+            t = "Category: " + str(result[i][9]) 
+            categoryLabel = Label(frame, text=t)
+            categoryLabel.grid(row=count+4, sticky="w")
+            moreInfoBtn = Button(frame, text="More Information", font=('Arial', 10), width=20, command=lambda i = i:self.passMoreInfoBtn(result[i][0], result[i][6]))
+            moreInfoBtn.grid(row=count+5, sticky="w", pady=10)
+            count = count + 10         
 
     def printAllEvent(self, frame):
         result = self.controler.printAllEventsGetData()
@@ -380,33 +439,49 @@ class Layout():
         self.destroyFrames()    
         self.moreInfoPage = Frame(self.root)
         self.moreInfoPage.pack(fill=BOTH, expand=1)
-        titleLable = Label(self.moreInfoPage, text=title, font=('Arial', 13), justify=LEFT)
+
+        # self.mainFrame = Frame(self.ho)
+        # self.mainFrame.pack(fill=BOTH, expand=1)
+        self.myCanvas = Canvas(self.moreInfoPage)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.moreInfoPage, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        titleLable = Label(self.secondFrame, text=title, font=('Arial', 13), justify=LEFT)
         titleLable.grid(row=0, sticky="nw", pady=10)
         result = self.controler.getAllInfoAboutEvent(title, organizator)
         descr = "Description: " + result[1]
         splitDescr = textwrap.wrap(descr, 80)
         descr = '\n'.join(splitDescr)
-        labDescr = Label(self.moreInfoPage, text=descr, justify=LEFT, font=('Arial', 11))
+        labDescr = Label(self.secondFrame, text=descr, justify=LEFT, font=('Arial', 11))
         location = "Location: " + result[2]
-        labLocation = Label(self.moreInfoPage, text=location, font=('Arial', 11))
+        labLocation = Label(self.secondFrame, text=location, font=('Arial', 11), justify=LEFT)
         date = "Date: " + str(result[3]) + '.' + str(result[4]) + '.' + str(result[5])
-        labDate = Label(self.moreInfoPage, text=date, font=('Arial', 11))
+        labDate = Label(self.secondFrame, text=date, font=('Arial', 11), justify=LEFT)
         org = "Organizer: " + result[6]
-        labOrg = Label(self.moreInfoPage, text = org, font=('Arial', 11))
+        labOrg = Label(self.secondFrame, text = org, font=('Arial', 11), justify=LEFT)
         capacity = "Capacity: " + str(result[7])
-        labCapacity = Label(self.moreInfoPage, text = capacity, font=('Arial', 11))
+        labCapacity = Label(self.secondFrame, text = capacity, font=('Arial', 11), justify=LEFT)
         takenSeats = "Seats sold: " + str(result[8])
         boolSpaceLeft = True
         if result[8] >= result[7]:
             boolSpaceLeft = False
-        labSeats = Label(self.moreInfoPage, text = takenSeats, font=('Arial', 11))
+        labSeats = Label(self.secondFrame, text = takenSeats, font=('Arial', 11), justify=LEFT)
         category = "Category: " + result[9]
-        labCat = Label(self.moreInfoPage, text = category, font=('Arial', 11))
+        labCat = Label(self.secondFrame, text = category, font=('Arial', 11), justify=LEFT)
         subCat = "Subcategories: " + result[10]
+        splitCat = textwrap.wrap(subCat, 60)
+        subCat = '\n'.join(splitCat)
+        # splitDescr = textwrap.wrap(descr, 80)
+        # descr = '\n'.join(splitDescr)
         sub = result[10]
-        labSubCat = Label(self.moreInfoPage, text = subCat, font=('Arial', 11))
+        labSubCat = Label(self.secondFrame, text = subCat, font=('Arial', 11), justify=LEFT)
         status = "Status: " + result[11]
-        labStatus = Label(self.moreInfoPage, text = status, font=('Arial', 11))
+        labStatus = Label(self.secondFrame, text = status, font=('Arial', 11), justify=LEFT)
         
         labDate.grid(row=1, sticky="w")
         labDescr.grid(row=9, sticky="w", pady=10)
@@ -418,18 +493,18 @@ class Layout():
         labSubCat.grid(row=5, sticky="w")
         labStatus.grid(row=6, sticky="w")
 
-        bookTicketsBtn = Button(self.moreInfoPage, text="Book Tickets", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft, sub), width=40)
+        bookTicketsBtn = Button(self.secondFrame, text="Book Tickets", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft, sub), width=40)
         bookTicketsBtn.grid(row = 12, sticky="nswe", pady=15)
 
         # print(title)
     def bookTicket(self, title, org, boolSpaceLeft, sub):
         res = self.controler.bookTicket(title, sub)
         if res == False:
-            errorLable = Label(self.moreInfoPage, text="You have to logged in to book tickets")
+            errorLable = Label(self.secondFrame, text="You have to logged in to book tickets")
             errorLable.grid(row=14)    
         else:
             if boolSpaceLeft == False:
-                errorLable = Label(self.moreInfoPage, text="There are no more tickets left")
+                errorLable = Label(self.secondFrame, text="There are no more tickets left")
                 errorLable.grid(row=14)
             else:
                 self.passMoreInfoBtn(title, org)    
@@ -486,7 +561,7 @@ class Layout():
 
         self.entryMainCategoryEventLable = Label(self.createEventFrame, text="Choose Main Category", justify=CENTER, font=('Arial', 10))
         self.entryMainCategoryEventLable.grid(row=6, column=0, sticky="nswe", pady=5, padx=5)
-        options = ["Concert", "Festivals", "Seminars", "Exhibitions", "Charity", "Sport"]
+        options = ["Concert", "Festivals", "Seminars", "Exhibitions", "Charity", "Sport", "Theater"]
         clicked = StringVar()
         clicked.set("Concert")
         drop = OptionMenu(self.createEventFrame, clicked , *options )

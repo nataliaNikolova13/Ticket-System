@@ -149,6 +149,15 @@ class Controler():
         # print(result)
         return result
     
+    def getMostVisitedTheater(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Theater",))
+        result = cursEvent.fetchone()
+        connEvent.close()
+        # print(result)
+        return result
+    
     def getMostVisitedSport(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
@@ -187,6 +196,14 @@ class Controler():
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Sport",))
+        result = cursEvent.fetchall()
+        connEvent.close()
+        return result
+    
+    def printAllTheater(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Theater",))
         result = cursEvent.fetchall()
         connEvent.close()
         return result

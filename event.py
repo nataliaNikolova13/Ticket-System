@@ -16,7 +16,8 @@ class Category(Enum):
     EXHIBITIONS = 3
     CHARITY = 4   
     SPORT = 5
-    UNKNOWN = 6
+    THEATER = 6
+    UNKNOWN = 7
 
 class Event():
     def __init__(self, title, description, location, date, month, year, organizer, numAvailableSeats, category, status, subcategories):
