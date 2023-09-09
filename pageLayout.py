@@ -30,6 +30,8 @@ class Layout():
         self.recFrame.pack()
         self.orgFrame = Frame(self.root)
         self.orgFrame.pack()
+        self.userFrame = Frame(self.root)
+        self.userFrame.pack()
         self.secondFrame = Frame(self.root)
         # self.scrollBar()
 
@@ -67,7 +69,7 @@ class Layout():
                 profileMenu.add_command(label="View statistics", command="")
             else:
                 menubar.add_cascade(label="Profile", menu=profileMenu,command="")    
-                profileMenu.add_command(label="View Profile", command="")
+                profileMenu.add_command(label="View Profile", command=self.userProfileView)
 
 
     def scrollBar(self):
@@ -624,6 +626,34 @@ class Layout():
         result = self.controler.printAllByOrganizer()
         self.printEvent(self.secondFrame, result)
 
+    def userProfileView(self):
+        self.destroyFrames()
+        self.userFrame = Frame(self.root)
+        self.userFrame.pack(fill=BOTH, expand=1)
+        self.myCanvas = Canvas(self.userFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.userFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")   
+
+        orgLabel = Label(self.secondFrame, text = "User: " + self.controler.currentUser.userName, font=('Arial', 13), justify=LEFT)
+        orgLabel.grid(row=0, sticky="nw", pady=15)  
+
+        tLabel = Label(self.secondFrame, text = "You have booked tickets for: ", font=('Arial', 13), justify=LEFT)
+        tLabel.grid(row=1, sticky="nw", pady=(0, 10))  
+
+        result = self.controler.getAllTicketsByUser()
+        count = 2
+        for i in range(0, len(result)):
+            titleLable = Label(self.secondFrame, text="Event: " + result[i][1], font=('Arial', 12), justify=LEFT)
+            titleLable.grid(row=count, sticky="w")
+            seatsLable = Label(self.secondFrame, text="Number of seats: " + str(result[i][2]), font=('Arial', 12), justify=LEFT)
+            seatsLable.grid(row=count+1, sticky="w", pady=(5, 10))
+            count = count + 5
+
 
 
     def bookTicket(self, title, org, boolSpaceLeft, sub):
@@ -762,6 +792,7 @@ class Layout():
         self.recFrame.destroy()
         self.editEventFrame.destroy()
         self.orgFrame.destroy()
+        self.userFrame.destroy()
         
           
         

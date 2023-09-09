@@ -119,6 +119,15 @@ class Controler():
         # self.getMostVisitedFEstival()
         return result
     
+    def getAllTicketsByUser(self):
+        username = self.currentUser.userName
+        connTicket = sqlite3.connect('tickets.db')
+        cursTicket = connTicket.cursor()
+        cursTicket.execute('SELECT * FROM TICKETS WHERE(Username = ?)', (username, ))
+        result = cursTicket.fetchall()
+        connTicket.close()
+        return result
+    
     def getMostVisitedFestival(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
