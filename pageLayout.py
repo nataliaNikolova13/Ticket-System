@@ -32,6 +32,8 @@ class Layout():
         self.orgFrame.pack()
         self.userFrame = Frame(self.root)
         self.userFrame.pack()
+        self.searchFrame = Frame(self.root)
+        self.searchFrame.pack()
         self.secondFrame = Frame(self.root)
         # self.scrollBar()
 
@@ -54,6 +56,7 @@ class Layout():
         menubar.add_cascade(label="Events", menu=eventsMenu)
         menubar.add_cascade(label="Most Popular",command=self.mostPopular)
         menubar.add_cascade(label="Recommendation",command=self.recPage)
+        menubar.add_cascade(label="Search",command=self.searchPage)
 
         if self.controler.currentUserLogged == False:
             menubar.add_cascade(label="Log In",command=self.logIn)
@@ -346,7 +349,7 @@ class Layout():
         self.printEvent(frame, result)
 
     def printEvent(self, frame, result):
-        count = 1
+        count = 5
         for i in range(0, len(result)):
             titleLable = Label(frame, text=result[i][0], font=('Arial', 12), justify=LEFT)
             titleLable.grid(row=count, sticky="w")
@@ -781,6 +784,62 @@ class Layout():
             result = self.controler.getTopGenres()
             self.printEvent(self.secondFrame, result)
 
+    def searchPage(self):
+        self.destroyFrames()
+        self.searchFrame = Frame(self.root)
+        self.searchFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.searchFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.searchFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        lableTitle = Label(self.secondFrame, text="Search by keyword", font=('Arial', 13))
+        lableTitle.grid(row=0, pady=(10, 10))
+
+        self.keywordLable = Label(self.secondFrame, text="Enter Your Search Keyword", justify=CENTER, font=('Arial', 10))
+        self.keywordLable.grid(row=1, column=0, sticky="nswe", pady=5, padx=5)
+        self.entryKeyword = Entry(self.secondFrame, bg="white")
+        self.entryKeyword.grid(row=1, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.SearchBtn = Button(self.secondFrame, width=20, text="Search", font=('Arial', 10), command=lambda :self.clickedSearchBtn(self.entryKeyword, self.secondFrame))
+        self.SearchBtn.grid(row=2, column=0, columnspan=2, pady=5)
+
+        
+    def clickedSearchBtn(self, entryKeyword, frame):
+        result = self.controler.searchByKeyword(entryKeyword.get())
+        self.destroyFrames()
+        self.searchFrame = Frame(self.root)
+        self.searchFrame.pack(fill=BOTH, expand=1)
+
+        self.myCanvas = Canvas(self.searchFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.searchFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+
+        lableTitle = Label(self.secondFrame, text="Search by keyword", font=('Arial', 13))
+        lableTitle.grid(row=0, pady=(10, 10))
+
+        self.keywordLable = Label(self.secondFrame, text="Enter Your Search Keyword", justify=CENTER, font=('Arial', 10))
+        self.keywordLable.grid(row=1, column=0, sticky="nswe", pady=5, padx=5)
+        self.entryKeyword = Entry(self.secondFrame, bg="white")
+        self.entryKeyword.grid(row=1, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.SearchBtn = Button(self.secondFrame, width=20, text="Search", font=('Arial', 10), command=lambda :self.clickedSearchBtn(self.entryKeyword, self.secondFrame))
+        self.SearchBtn.grid(row=2, column=0, columnspan=2, pady=(5, 15))
+
+        self.printEvent(self.secondFrame, result)
+        
+        
+    
     def destroyFrames(self):
         self.logInFrame.destroy()
         self.registrtionFrame.destroy()
@@ -793,6 +852,7 @@ class Layout():
         self.editEventFrame.destroy()
         self.orgFrame.destroy()
         self.userFrame.destroy()
+        self.searchFrame.destroy()
         
           
         

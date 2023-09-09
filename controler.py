@@ -128,6 +128,14 @@ class Controler():
         connTicket.close()
         return result
     
+    def searchByKeyword(self, keyword):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Organizer LIKE ? OR Title LIKE ? OR Location LIKE ? OR Description LIKE ? OR Category LIKE ? OR Subcategory LIKE ?)', ('%' + keyword + '%', '%' + keyword + '%', '%' + keyword + '%', '%' + keyword + '%', '%' + keyword + '%', '%' + keyword + '%'))
+        result = cursEvent.fetchall()
+        connEvent.close()
+        return result
+    
     def getMostVisitedFestival(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
