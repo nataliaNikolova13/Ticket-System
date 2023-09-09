@@ -20,12 +20,16 @@ class Layout():
         self.homeFrame.pack()
         self.createEventFrame = Frame(self.root)
         self.createEventFrame.pack()
+        self.editEventFrame = Frame(self.root)
+        self.editEventFrame.pack()
         self.moreInfoPage = Frame(self.root)
         self.moreInfoPage.pack()
         self.mostPopularFrame = Frame(self.root)
         self.mostPopularFrame.pack()
         self.recFrame = Frame(self.root)
         self.recFrame.pack()
+        self.orgFrame = Frame(self.root)
+        self.orgFrame.pack()
         self.secondFrame = Frame(self.root)
         # self.scrollBar()
 
@@ -53,14 +57,17 @@ class Layout():
             menubar.add_cascade(label="Log In",command=self.logIn)
         else:
             profileMenu = Menu(menubar, tearoff=0)
-            profileMenu.add_command(label="View Profile", command="")
+            # profileMenu.add_command(label="View Profile", command="")
             profileMenu.add_command(label="Log Out", command=self.logOut)
             if self.controler.currentRole.name == "Organizer":
+                
                 menubar.add_cascade(label="Profile", menu=profileMenu,command="")
+                profileMenu.add_command(label="View Profile", command=self.organizerProfileView)
                 profileMenu.add_command(label="Create event", command=self.createEvent)
                 profileMenu.add_command(label="View statistics", command="")
             else:
                 menubar.add_cascade(label="Profile", menu=profileMenu,command="")    
+                profileMenu.add_command(label="View Profile", command="")
 
 
     def scrollBar(self):
@@ -499,9 +506,126 @@ class Layout():
         labStatus.grid(row=6, sticky="w")
 
         bookTicketsBtn = Button(self.secondFrame, text="Book Tickets", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft, sub), width=40)
-        bookTicketsBtn.grid(row = 12, sticky="nswe", pady=15)
+        bookTicketsBtn.grid(row = 12, sticky="nswe", pady=5)
+        if self.controler.currentRole.name == "Organizer" and result[6] == self.controler.currentUser.userName:
+            editEventBtn = Button(self.secondFrame, text="Edit Event", font=('Arial', 11), command=lambda:self.editEventView(title), width=40)
+            editEventBtn.grid(row = 13, sticky="nswe", pady=5)
 
         # print(title)
+
+    def editEventView(self, title):
+        result = self.controler.getEventByTitle(title)
+        self.destroyFrames()
+        self.editEventFrame = Frame(self.root)
+        self.editEventFrame.pack(fill=BOTH, expand=1)
+        
+        self.titleCreateEvent = Label(self.editEventFrame, text="Edit Event", justify=CENTER, font=('Arial', 13))
+        self.titleCreateEvent.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)
+
+        self.entryTitleEventLable = Label(self.editEventFrame, text="Enter Title", justify=CENTER, font=('Arial', 10))
+        self.entryTitleEventLable.grid(row=1, column=0, sticky="nswe", pady=5, padx=5)
+        self.entryTitleEvent = Entry(self.editEventFrame, bg="white")
+        self.entryTitleEvent.insert(0, result[0])
+        self.entryTitleEvent.config(state= "disabled")
+        self.entryTitleEvent.grid(row=1, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryDescriptionEventLable = Label(self.editEventFrame, text="Enter Description", justify=CENTER, font=('Arial', 10))
+        self.entryDescriptionEventLable.grid(row=2, column=0, sticky="nswe", pady=5, padx=5)
+        self.entryDescriptionEvent = Text(self.editEventFrame, bg="white", height=6, width=25)
+        self.entryDescriptionEvent.insert(END, result[1])
+        self.entryDescriptionEvent.grid(row=2, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryLocationEventLable = Label(self.editEventFrame, text="Enter Location", justify=CENTER, font=('Arial', 10))
+        self.entryLocationEventLable.grid(row=3, column=0, sticky="nswe", pady=5, padx=5)
+        self.entryLocationEvent = Entry(self.editEventFrame, bg="white")
+        self.entryLocationEvent.insert(0, result[2])
+        self.entryLocationEvent.grid(row=3, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryDateEventLable = Label(self.editEventFrame, text="Enter Date (dd/mm/yyyy)", justify=CENTER, font=('Arial', 10))
+        self.entryDateEventLable.grid(row=4, column=0, sticky="nswe", pady=5, padx=5)
+        date = str(result[3]) + '/' + str(result[4]) + '/' + str(result[5])
+        self.entryDateEvent = Entry(self.editEventFrame, bg="white")
+        self.entryDateEvent.insert(0, date)
+        self.entryDateEvent.grid(row=4, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryCapacityEventLable = Label(self.editEventFrame, text="Enter Capacity", justify=CENTER, font=('Arial', 10))
+        self.entryCapacityEventLable.grid(row=5, column=0, sticky="nswe", pady=5, padx=5)
+        self.entryCapacityEvent = Entry(self.editEventFrame, bg="white")
+        self.entryCapacityEvent.insert(0, result[7])
+        self.entryCapacityEvent.grid(row=5, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryMainCategoryEventLable = Label(self.editEventFrame, text="Choose Main Category", justify=CENTER, font=('Arial', 10))
+        self.entryMainCategoryEventLable.grid(row=6, column=0, sticky="nswe", pady=5, padx=5)
+        options = ["Concert", "Festivals", "Seminars", "Exhibitions", "Charity", "Sport", "Theater"]
+        clicked = StringVar()
+        # print(result)
+        for option in options:
+            # print(option, result[8])
+            if option == result[9]:
+                clicked.set(option)
+        drop = OptionMenu(self.editEventFrame, clicked , *options )
+        drop.grid(row=6, column=1, sticky="nswe", pady=5, padx=5)
+        # print(clicked.get())
+    
+        self.entrySubCategoriesLable = Label(self.editEventFrame, text="Enter Subcategories", justify=CENTER, font=('Arial', 10))
+        self.entrySubCategoriesLable.grid(row=7, column=0, sticky="nswe", pady=5, padx=5)
+        self.entrySubCategories = Entry(self.editEventFrame, bg="white")
+        self.entrySubCategories.insert(0, result[10])
+        self.entrySubCategories.grid(row=7, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.entryStatusEventLable = Label(self.editEventFrame, text="Choose status", justify=CENTER, font=('Arial', 10))
+        self.entryStatusEventLable.grid(row=8, column=0, sticky="nswe", pady=5, padx=5)
+        optionsStatus = ["Ongoing", "Upcoming"]
+        clickedStatus = StringVar()
+        # print(result[11])
+        for status in optionsStatus:
+            # print()
+            if status == result[11]:
+                clickedStatus.set(status)
+        # clickedStatus.set("Ongoing")
+        dropStatus = OptionMenu(self.editEventFrame, clickedStatus , *optionsStatus )
+        dropStatus.grid(row=8, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.createEventBtn = Button(self.editEventFrame, width=20, text="Edit Event", font=('Arial', 10), command=lambda :self.clickedEditEventBtn(self.entryTitleEvent, self.entryDescriptionEvent, self.entryLocationEvent, self.entryDateEvent, self.entryCapacityEvent, clicked, self.entrySubCategories, clickedStatus))
+        self.createEventBtn.grid(row=9, column=0, columnspan=2, pady=5)
+
+    def clickedEditEventBtn(self, entryTitleEvent, entryDescriptionEvent, entryLocationEvent, entryDateEvent, entryCapacityEvent, clicked, entrySubCategories, clickedStatus):
+        title = entryTitleEvent.get()
+        description = entryDescriptionEvent.get("1.0",END)
+        location = entryLocationEvent.get()
+        date = entryDateEvent.get()
+        capacity = entryCapacityEvent.get()
+        category = clicked.get()
+        subCategories = entrySubCategories.get()
+        status = clickedStatus.get()
+        # print
+
+        # self.controler.passRegistrationInfo(userName, email, password, radio)
+        self.controler.passEditEventInfo(title, description, location, date, capacity, category, subCategories, status)
+        self.organizerProfileView()
+
+
+    def organizerProfileView(self):
+        self.destroyFrames()
+        self.orgFrame = Frame(self.root)
+        self.orgFrame.pack(fill=BOTH, expand=1)
+        self.myCanvas = Canvas(self.orgFrame)
+        self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
+        self.myScrollbar = ttk.Scrollbar(self.orgFrame, orient=VERTICAL, command=self.myCanvas.yview)
+        self.myScrollbar.pack(side=RIGHT, fill=Y)
+        self.myCanvas.configure(yscrollcommand=self.myScrollbar)
+        self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
+        self.secondFrame = Frame(self.myCanvas)
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")   
+
+        orgLabel = Label(self.secondFrame, text = "User: " + self.controler.currentUser.userName, font=('Arial', 13), justify=LEFT)
+        orgLabel.grid(row=0, sticky="nw", pady=15) 
+
+        result = self.controler.printAllByOrganizer()
+        self.printEvent(self.secondFrame, result)
+
+
+
     def bookTicket(self, title, org, boolSpaceLeft, sub):
         res = self.controler.bookTicket(title, sub)
         if res == False:
@@ -636,6 +760,8 @@ class Layout():
         self.secondFrame.destroy()
         self.mostPopularFrame.destroy()
         self.recFrame.destroy()
+        self.editEventFrame.destroy()
+        self.orgFrame.destroy()
         
           
         

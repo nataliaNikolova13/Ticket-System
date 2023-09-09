@@ -17,13 +17,6 @@ class Controler():
 
 
     def passLogInInfo(self, username, password, role):
-        # print(role)
-        # print(Role(int(role)).name)
-        # print(Role(role).name)
-
-        # print(role.name)
-        
-        # print("Username %s Password %s Role %s"%(username, password, Role(int(role)).name))  
 
         connUsers = sqlite3.connect('users.db')
         cursUsers = connUsers.cursor()
@@ -74,10 +67,23 @@ class Controler():
         list = date.split('/')
         # print(*list)
         # event = Event(title, description, location, int(list[0]), int(list[1]), int(list[2]), organizer, int(capacity), category, status, subCategories) 
-        print(category)
+        # print(category)
         event = EventCreator(title, description, location, int(list[0]), int(list[1]), int(list[2]), organizer, int(capacity), category, status, subCategories)
         # print(category)title, description, location, date, month, year, organizer, numAvailableSeats, category, status, subcategories
         event.addToDataBase()
+        list = date.split('/')
+
+    def passEditEventInfo(self, title, description, location, date, capacity, category, subCategories, status):
+        organizer = self.currentUser.userName
+        list = date.split('/')
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('UPDATE EVENTS SET Description = ?, Location = ?, Date = ?, Month = ?, Year = ?, NumAvailableSeats = ?, Category = ?, Subcategory = ?, Status = ? WHERE (Title = ?)', (description, location, int(list[0]), int(list[1]), int(list[2]), capacity, category, subCategories, status, title))
+        
+        result = cursEvent.fetchone()
+        connEvent.commit()
+        connEvent.close()
+
 
     def printAllEventsGetData(self):
         connEvent = sqlite3.connect('events.db')
@@ -99,6 +105,15 @@ class Controler():
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Festivals",))
+        result = cursEvent.fetchall()
+        connEvent.close()
+        # self.getMostVisitedFEstival()
+        return result
+    
+    def printAllByOrganizer(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Organizer = ?)', (self.currentUser.userName,))
         result = cursEvent.fetchall()
         connEvent.close()
         # self.getMostVisitedFEstival()
@@ -166,6 +181,15 @@ class Controler():
         connEvent.close()
         # print(result)
         return result
+    
+    def getEventByTitle(self, title):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Title = ?)', (title,))
+        result = cursEvent.fetchone()
+        connEvent.close()
+        return result
+
     
     def getTopGenres(self):
         if self.currentUser == False:
