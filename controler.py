@@ -14,7 +14,9 @@ class Controler():
         # self.currentUser = True
         self.currentCategory = Category.UNKNOWN
         self.currentRole = Role.Unknown
-        # self.currentRole = Role.Organizer
+        
+        self.currentDate = datetime.datetime.now()
+        self.updateEventStatus()
 
 
     def passLogInInfo(self, username, password, role):
@@ -101,7 +103,7 @@ class Controler():
     def printAllEventsGetData(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS')
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Status = ? OR Status = ?)', ("Ongoing", "Upcoming"))
         result = cursEvent.fetchall()
         connEvent.close()
         return result
@@ -109,7 +111,7 @@ class Controler():
     def printAllConcerts(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Concert",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?))', ("Concert","Ongoing", "Upcoming"))
         result = cursEvent.fetchall()
         connEvent.close()
         return result
@@ -117,7 +119,7 @@ class Controler():
     def printAllFestivals(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Festivals",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?))', ("Festivals","Ongoing", "Upcoming"))
         result = cursEvent.fetchall()
         connEvent.close()
         return result
@@ -147,10 +149,31 @@ class Controler():
         connEvent.close()
         return result
     
+    def searchByInterval(self, start, end):
+        start = start.split('/')
+        end = end.split('/')
+        startDate = datetime.datetime(int(start[2]), int(start[1]), int(start[0]))
+        endDate = datetime.datetime(int(end[2]), int(end[1]), int(end[0]))
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        # cursEvent.execute('')
+        eventsInInterval = []
+
+        cursEvent.execute('SELECT * FROM EVENTS')
+        allEvent = cursEvent.fetchall()
+
+        for event in allEvent:
+            dateEvent = datetime.datetime(int(event[5]), int(event[4]), int(event[3]))
+            if dateEvent >= startDate and dateEvent <= endDate:
+                eventsInInterval.append(event)
+
+        connEvent.close()
+        return eventsInInterval
+    
     def getMostVisitedFestival(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Festivals",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?)) ORDER BY SeatsTaken DESC', ("Festivals","Ongoing", "Upcoming"))
         result = cursEvent.fetchone()
         connEvent.close()
         return result
@@ -158,7 +181,7 @@ class Controler():
     def getMostVisitedConcert(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Concert",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?)) ORDER BY SeatsTaken DESC', ("Concert","Ongoing", "Upcoming"))
         result = cursEvent.fetchone()
         connEvent.close()
         return result
@@ -166,7 +189,7 @@ class Controler():
     def getMostVisitedSeminar(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Seminars",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?)) ORDER BY SeatsTaken DESC', ("Seminars","Ongoing", "Upcoming"))
         result = cursEvent.fetchone()
         connEvent.close()
         return result
@@ -174,7 +197,7 @@ class Controler():
     def getMostVisitedExhibitions(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Exhibitions",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?)) ORDER BY SeatsTaken DESC', ("Exhibitions", "Ongoing", "Upcoming"))
         result = cursEvent.fetchone()
         connEvent.close()
         return result
@@ -182,7 +205,7 @@ class Controler():
     def getMostVisitedCharity(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Charity",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?)) ORDER BY SeatsTaken DESC', ("Charity", "Ongoing", "Upcoming"))
         result = cursEvent.fetchone()
         connEvent.close()
         return result
@@ -190,7 +213,7 @@ class Controler():
     def getMostVisitedTheater(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Theater",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?)) ORDER BY SeatsTaken DESC', ("Theater", "Ongoing", "Upcoming"))
         result = cursEvent.fetchone()
         connEvent.close()
         return result
@@ -198,7 +221,7 @@ class Controler():
     def getMostVisitedSport(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Sport",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?)) ORDER BY SeatsTaken DESC', ("Sport", "Ongoing", "Upcoming"))
         result = cursEvent.fetchone()
         connEvent.close()
         return result
@@ -242,7 +265,7 @@ class Controler():
         cursTickets = connTicketsBought.cursor()
         allEventWithGivenGenres = []
         for genre in prefGenres:
-            cursEvent.execute('SELECT * FROM EVENTS WHERE (Subcategory LIKE ?) ORDER BY SeatsTaken DESC', ('%' + genre + '%',))
+            cursEvent.execute('SELECT * FROM EVENTS WHERE (Subcategory LIKE ? AND (Status = ? OR Status = ?)) ORDER BY SeatsTaken DESC', ('%' + genre + '%', "Ongoing", "Upcoming"))
             events = cursEvent.fetchall()
             for event in events:
                 if event not in allEventWithGivenGenres:
@@ -272,7 +295,7 @@ class Controler():
     def printAllSeminars(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Seminars",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?))', ("Seminars", "Ongoing", "Upcoming"))
         result = cursEvent.fetchall()
         connEvent.close()
         return result
@@ -280,7 +303,7 @@ class Controler():
     def printAllExhibitions(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Exhibitions",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?))', ("Exhibitions", "Ongoing", "Upcoming"))
         result = cursEvent.fetchall()
         connEvent.close()
         return result
@@ -288,7 +311,7 @@ class Controler():
     def printAllCharity(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Charity",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?))', ("Charity", "Ongoing", "Upcoming"))
         result = cursEvent.fetchall()
         connEvent.close()
         return result
@@ -296,7 +319,7 @@ class Controler():
     def printAllSport(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Sport",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?))', ("Sport", "Ongoing", "Upcoming"))
         result = cursEvent.fetchall()
         connEvent.close()
         return result
@@ -304,7 +327,7 @@ class Controler():
     def printAllTheater(self):
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Theater",))
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ? AND (Status = ? OR Status = ?))', ("Theater", "Ongoing", "Upcoming"))
         result = cursEvent.fetchall()
         connEvent.close()
         return result
@@ -397,6 +420,25 @@ class Controler():
 
         connEvent.commit()
         connEvent.close()
+
+
+    def updateEventStatus(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+
+        cursEvent.execute('SELECT * FROM EVENTS')
+        allEvent = cursEvent.fetchall()
+
+        for event in allEvent:
+            dateEvent = datetime.datetime(int(event[5]), int(event[4]), int(event[3]))
+            if dateEvent < self.currentDate:
+                cursEvent.execute("UPDATE EVENTS SET Status=? WHERE (Title = ?)", ("Past", event[0]))
+            else:     
+                cursEvent.execute("UPDATE EVENTS SET Status=? WHERE (Title = ?)", ("Ongoing", event[0]))
+
+
+        connEvent.commit()
+        connEvent.close()   
 
 
 

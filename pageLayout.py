@@ -349,7 +349,7 @@ class Layout():
         self.printEvent(frame, result)
 
     def printEvent(self, frame, result):
-        count = 5
+        count = 6
         for i in range(0, len(result)):
             titleLable = Label(frame, text=result[i][0], font=('Arial', 12), justify=LEFT)
             titleLable.grid(row=count, sticky="w")
@@ -507,13 +507,13 @@ class Layout():
         labSubCat.grid(row=5, sticky="w")
         labStatus.grid(row=6, sticky="w")
 
-        bookTicketsBtn = Button(self.secondFrame, text="Book Tickets", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft, sub), width=40)
+        bookTicketsBtn = Button(self.secondFrame, text="Book Tickets", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft, sub, result[11]), width=40)
         bookTicketsBtn.grid(row = 12, sticky="nswe", pady=5)
         if self.controler.currentRole.name == "Organizer" and result[6] == self.controler.currentUser.userName:
             editEventBtn = Button(self.secondFrame, text="Edit Event", font=('Arial', 11), command=lambda:self.editEventView(title), width=40)
             editEventBtn.grid(row = 13, sticky="nswe", pady=5)
             deleteEventBtn = Button(self.secondFrame, text="Delete Event", font=('Arial', 11), command=lambda:self.deleteEventView(title), width=40)
-            deleteEventBtn.grid(row = 13, sticky="nswe", pady=5)
+            deleteEventBtn.grid(row = 14, sticky="nswe", pady=5)
 
       
 
@@ -663,7 +663,7 @@ class Layout():
 
 
 
-    def bookTicket(self, title, org, boolSpaceLeft, sub):
+    def bookTicket(self, title, org, boolSpaceLeft, sub, status):
         res = self.controler.bookTicket(title, sub)
         if res == False:
             errorLable = Label(self.secondFrame, text="You have to logged in to book tickets")
@@ -672,6 +672,12 @@ class Layout():
             if boolSpaceLeft == False:
                 errorLable = Label(self.secondFrame, text="There are no more tickets left")
                 errorLable.grid(row=14)
+            elif status == "Past":
+                errorLable = Label(self.secondFrame, text="You can't book a ticket, the event has already past")
+                errorLable.grid(row=14) 
+            elif status == "Upcoming":
+                errorLable = Label(self.secondFrame, text="The tickets haven't been released yet")
+                errorLable.grid(row=14)       
             else:
                 self.passMoreInfoBtn(title, org)    
                 self.confirmationWindow()
@@ -802,20 +808,45 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        lableTitle = Label(self.secondFrame, text="Search by keyword", font=('Arial', 13))
-        lableTitle.grid(row=0, pady=(10, 10))
+        lableTitle = Label(self.secondFrame, text="Search by keyword", font=('Arial', 13), justify=LEFT)
+        lableTitle.grid(row=0, pady=(10, 10), sticky="w")
 
-        self.keywordLable = Label(self.secondFrame, text="Enter Your Search Keyword", justify=CENTER, font=('Arial', 10))
+        self.keywordLable = Label(self.secondFrame, text="Enter Keyword", justify=CENTER, font=('Arial', 10))
         self.keywordLable.grid(row=1, column=0, sticky="nswe", pady=5, padx=5)
         self.entryKeyword = Entry(self.secondFrame, bg="white")
         self.entryKeyword.grid(row=1, column=1, sticky="nswe", pady=5, padx=5)
 
-        self.SearchBtn = Button(self.secondFrame, width=20, text="Search", font=('Arial', 10), command=lambda :self.clickedSearchBtn(self.entryKeyword, self.secondFrame))
-        self.SearchBtn.grid(row=2, column=0, columnspan=2, pady=5)
+        self.intervalDateLable = Label(self.secondFrame, text="Search by time Interval", font=('Arial', 13), justify=LEFT)
+        self.intervalDateLable.grid(row=2, columnspan=4, pady=(10, 10), sticky="w")
+
+        self.startDateLabel = Label(self.secondFrame, text="Start date", justify=CENTER, font=('Arial', 10))
+        self.startDateLabel.grid(row=3, column=0, sticky="nswe", pady=5, padx=5)
+        self.startDateEntry = Entry(self.secondFrame, bg="white")
+        self.startDateEntry.grid(row=3, column=1, sticky="nswe", pady=5, padx=5)
+        self.endDateLabel = Label(self.secondFrame, text="End date", justify=CENTER, font=('Arial', 10))
+        self.endDateLabel.grid(row=4, column=0, sticky="nswe", pady=5, padx=5)
+        self.endDateEntry = Entry(self.secondFrame, bg="white")
+        self.endDateEntry.grid(row=4, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.SearchBtn = Button(self.secondFrame, width=40, text="Search", font=('Arial', 10), command=lambda :self.clickedSearchBtn(self.entryKeyword, self.secondFrame, self.startDateEntry, self.endDateEntry))
+        self.SearchBtn.grid(row=5, column=0, columnspan=2, sticky="nswe",pady=10, ipadx=20)
 
         
-    def clickedSearchBtn(self, entryKeyword, frame):
-        result = self.controler.searchByKeyword(entryKeyword.get())
+    def clickedSearchBtn(self, entryKeyword, frame, startDateEntry, endDateEntry):
+        result = []
+        if entryKeyword.get() != '':
+            result = self.controler.searchByKeyword(entryKeyword.get())
+        elif startDateEntry.get() != '' and endDateEntry.get() != '':
+            result = self.controler.searchByInterval(startDateEntry.get(), endDateEntry.get()) 
+        elif entryKeyword.get() != '' and startDateEntry.get() != '' and endDateEntry.get() != '':
+            keywordSearch = self.controler.searchByKeyword(entryKeyword.get())     
+            dateSearch = self.controler.searchByInterval(startDateEntry.get(), endDateEntry.get()) 
+
+            for event in keywordSearch: 
+                if event in dateSearch:
+                    result.append(event)   
+
+
         self.destroyFrames()
         self.searchFrame = Frame(self.root)
         self.searchFrame.pack(fill=BOTH, expand=1)
@@ -829,16 +860,28 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        lableTitle = Label(self.secondFrame, text="Search by keyword", font=('Arial', 13))
-        lableTitle.grid(row=0, pady=(10, 10))
+        lableTitle = Label(self.secondFrame, text="Search by keyword", font=('Arial', 13), justify=LEFT)
+        lableTitle.grid(row=0, pady=(10, 10), sticky="w")
 
-        self.keywordLable = Label(self.secondFrame, text="Enter Your Search Keyword", justify=CENTER, font=('Arial', 10))
+        self.keywordLable = Label(self.secondFrame, text="Enter Keyword", justify=CENTER, font=('Arial', 10))
         self.keywordLable.grid(row=1, column=0, sticky="nswe", pady=5, padx=5)
         self.entryKeyword = Entry(self.secondFrame, bg="white")
         self.entryKeyword.grid(row=1, column=1, sticky="nswe", pady=5, padx=5)
 
-        self.SearchBtn = Button(self.secondFrame, width=20, text="Search", font=('Arial', 10), command=lambda :self.clickedSearchBtn(self.entryKeyword, self.secondFrame))
-        self.SearchBtn.grid(row=2, column=0, columnspan=2, pady=(5, 15))
+        self.intervalDateLable = Label(self.secondFrame, text="Search by time Interval", font=('Arial', 13), justify=LEFT)
+        self.intervalDateLable.grid(row=2, columnspan=4, pady=(10, 10), sticky="w")
+
+        self.startDateLabel = Label(self.secondFrame, text="Start date", justify=CENTER, font=('Arial', 10))
+        self.startDateLabel.grid(row=3, column=0, sticky="nswe", pady=5, padx=5)
+        self.startDateEntry = Entry(self.secondFrame, bg="white")
+        self.startDateEntry.grid(row=3, column=1, sticky="nswe", pady=5, padx=5)
+        self.endDateLabel = Label(self.secondFrame, text="End date", justify=CENTER, font=('Arial', 10))
+        self.endDateLabel.grid(row=4, column=0, sticky="nswe", pady=5, padx=5)
+        self.endDateEntry = Entry(self.secondFrame, bg="white")
+        self.endDateEntry.grid(row=4, column=1, sticky="nswe", pady=5, padx=5)
+
+        self.SearchBtn = Button(self.secondFrame, width=40, text="Search", font=('Arial', 10), command=lambda :self.clickedSearchBtn(self.entryKeyword, self.secondFrame, self.startDateEntry, self.endDateEntry))
+        self.SearchBtn.grid(row=5, column=0, columnspan=2, sticky="nswe",pady=10, ipadx=20)
 
         self.printEvent(self.secondFrame, result)
         
