@@ -3,6 +3,7 @@ from event import Event as EventCreator
 from users import Role, NormalUser, Organizer
 import sqlite3
 from tkinter import *
+import datetime
 # from tkinter import ttk
 
 
@@ -20,11 +21,11 @@ class Controler():
 
         connUsers = sqlite3.connect('users.db')
         cursUsers = connUsers.cursor()
-        # cursUsers.execute('SELECT count(*) FROM USERS')
+        
         cursUsers.execute('SELECT * FROM USERS WHERE (UserName = ? AND Password = ? AND Role = ?)', (username, password, Role(int(role)).name))
 
         entry = cursUsers.fetchone()
-        # print(entry)
+       
         if entry is None:
             return False
         else:
@@ -40,7 +41,7 @@ class Controler():
           
 
     def passRegistrationInfo(self, username, email, password, role):
-        # print(role)
+       
         if Role(int(role)).name == "NormalUser":
             user = NormalUser(username, email, password)
             user.addUserToDataBase()
@@ -53,8 +54,8 @@ class Controler():
         self.currentUser = user
         self.currentRole = Role(int(role))  
         self.currentUserLogged = True 
-        # print("ok")  
-        # 
+          
+         
     def logOut(self):
         self.currentUser = False
         self.currentUserLogged = False
@@ -65,11 +66,9 @@ class Controler():
     def passCreateEventInfo(self, title, description, location, date, capacity, category, subCategories, status):
         organizer = self.currentUser.userName
         list = date.split('/')
-        # print(*list)
-        # event = Event(title, description, location, int(list[0]), int(list[1]), int(list[2]), organizer, int(capacity), category, status, subCategories) 
-        # print(category)
+        
         event = EventCreator(title, description, location, int(list[0]), int(list[1]), int(list[2]), organizer, int(capacity), category, status, subCategories)
-        # print(category)title, description, location, date, month, year, organizer, numAvailableSeats, category, status, subcategories
+        
         event.addToDataBase()
         list = date.split('/')
 
@@ -83,6 +82,20 @@ class Controler():
         result = cursEvent.fetchone()
         connEvent.commit()
         connEvent.close()
+
+    def passDeleteInfo(self, title):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        connTicketsBought = sqlite3.connect('tickets.db')
+        cursTickets = connTicketsBought.cursor()
+
+        cursEvent.execute('DELETE FROM EVENTS WHERE(Title = ?)', (title,))
+        cursTickets.execute('DELETE FROM TICKETS WHERE(Title = ?)', (title, ))
+
+        connEvent.commit()
+        connEvent.close()
+        connTicketsBought.close()
+
 
 
     def printAllEventsGetData(self):
@@ -107,7 +120,6 @@ class Controler():
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?)', ("Festivals",))
         result = cursEvent.fetchall()
         connEvent.close()
-        # self.getMostVisitedFEstival()
         return result
     
     def printAllByOrganizer(self):
@@ -116,7 +128,6 @@ class Controler():
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Organizer = ?)', (self.currentUser.userName,))
         result = cursEvent.fetchall()
         connEvent.close()
-        # self.getMostVisitedFEstival()
         return result
     
     def getAllTicketsByUser(self):
@@ -142,7 +153,6 @@ class Controler():
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Festivals",))
         result = cursEvent.fetchone()
         connEvent.close()
-        # print(result)
         return result
     
     def getMostVisitedConcert(self):
@@ -151,7 +161,6 @@ class Controler():
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Concert",))
         result = cursEvent.fetchone()
         connEvent.close()
-        # print(result)
         return result
     
     def getMostVisitedSeminar(self):
@@ -160,7 +169,6 @@ class Controler():
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Seminars",))
         result = cursEvent.fetchone()
         connEvent.close()
-        # print(result)
         return result
     
     def getMostVisitedExhibitions(self):
@@ -169,7 +177,6 @@ class Controler():
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Exhibitions",))
         result = cursEvent.fetchone()
         connEvent.close()
-        # print(result)
         return result
     
     def getMostVisitedCharity(self):
@@ -178,7 +185,6 @@ class Controler():
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Charity",))
         result = cursEvent.fetchone()
         connEvent.close()
-        # print(result)
         return result
     
     def getMostVisitedTheater(self):
@@ -187,7 +193,6 @@ class Controler():
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Theater",))
         result = cursEvent.fetchone()
         connEvent.close()
-        # print(result)
         return result
     
     def getMostVisitedSport(self):
@@ -196,7 +201,6 @@ class Controler():
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Category = ?) ORDER BY SeatsTaken DESC', ("Sport",))
         result = cursEvent.fetchone()
         connEvent.close()
-        # print(result)
         return result
     
     def getEventByTitle(self, title):
@@ -225,14 +229,12 @@ class Controler():
             for e in entry:
                 prefGenres.append(e[1])
 
-            # print(prefGenres)
             connGenres.close
             self.getrecEvents(prefGenres)
 
         return self.getrecEvents(prefGenres)
 
     def getrecEvents(self, prefGenres):
-        # print(prefGenres)
         userName = self.currentUser.userName
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
@@ -245,7 +247,7 @@ class Controler():
             for event in events:
                 if event not in allEventWithGivenGenres:
                     allEventWithGivenGenres.append(event)
-        # print(allEventWithGivenGenres)
+        
 
         cursTickets.execute('SELECT Title FROM Tickets WHERE(UserName = ?)', (userName, ))
         entry = cursTickets.fetchall()
@@ -253,19 +255,15 @@ class Controler():
         for i in entry:
             allVisitedEvents.append(i[0])
 
-        # print(allVisitedEvents)
-        # allVisitedEvents = allVisitedEvents.strip("[](),")
+        
         recEvents = []
 
         for i in range(0, len(allEventWithGivenGenres)):
-            # print(allEventWithGivenGenres[i][0])
-            # print(allVisitedEvents)  
+            
             if allEventWithGivenGenres[i][0] not in allVisitedEvents:
                 recEvents.append(allEventWithGivenGenres[i])
 
-        # print(allVisitedEvents)  
-        # print(recEvents)      
-
+       
         connEvent.close()
         connTicketsBought.close()
         return recEvents
@@ -317,7 +315,6 @@ class Controler():
         cursEvent.execute('SELECT * FROM EVENTS WHERE (Title = ? AND Organizer = ?)', (title, organizator))
         result = cursEvent.fetchone()
         connEvent.close()
-        # print(result)
         return result
     
     def checkIfSeatsSoldOut(self, title):
@@ -330,7 +327,7 @@ class Controler():
             return True
         else:
             return False
-        # print(len(result))
+        
         
     
     def bookTicket(self, title, subCategories):

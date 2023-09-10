@@ -75,7 +75,7 @@ cursUsers.execute(tableUsers)
 connUsers.close()
 
 cursEvent.execute(tableEvents)
-cursEvent.close()
+connEvent.close()
 
 cursTickets.execute(tableTickets)
-cursTickets.close()
+connTicketsBought.close()

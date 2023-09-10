@@ -457,8 +457,6 @@ class Layout():
         self.moreInfoPage = Frame(self.root)
         self.moreInfoPage.pack(fill=BOTH, expand=1)
 
-        # self.mainFrame = Frame(self.ho)
-        # self.mainFrame.pack(fill=BOTH, expand=1)
         self.myCanvas = Canvas(self.moreInfoPage)
         self.myCanvas.pack(side=LEFT, fill=BOTH, expand=1)
         self.myScrollbar = ttk.Scrollbar(self.moreInfoPage, orient=VERTICAL, command=self.myCanvas.yview)
@@ -493,8 +491,7 @@ class Layout():
         subCat = "Subcategories: " + result[10]
         splitCat = textwrap.wrap(subCat, 60)
         subCat = '\n'.join(splitCat)
-        # splitDescr = textwrap.wrap(descr, 80)
-        # descr = '\n'.join(splitDescr)
+        
         sub = result[10]
         labSubCat = Label(self.secondFrame, text = subCat, font=('Arial', 11), justify=LEFT)
         status = "Status: " + result[11]
@@ -515,8 +512,10 @@ class Layout():
         if self.controler.currentRole.name == "Organizer" and result[6] == self.controler.currentUser.userName:
             editEventBtn = Button(self.secondFrame, text="Edit Event", font=('Arial', 11), command=lambda:self.editEventView(title), width=40)
             editEventBtn.grid(row = 13, sticky="nswe", pady=5)
+            deleteEventBtn = Button(self.secondFrame, text="Delete Event", font=('Arial', 11), command=lambda:self.deleteEventView(title), width=40)
+            deleteEventBtn.grid(row = 13, sticky="nswe", pady=5)
 
-        # print(title)
+      
 
     def editEventView(self, title):
         result = self.controler.getEventByTitle(title)
@@ -593,6 +592,11 @@ class Layout():
 
         self.createEventBtn = Button(self.editEventFrame, width=20, text="Edit Event", font=('Arial', 10), command=lambda :self.clickedEditEventBtn(self.entryTitleEvent, self.entryDescriptionEvent, self.entryLocationEvent, self.entryDateEvent, self.entryCapacityEvent, clicked, self.entrySubCategories, clickedStatus))
         self.createEventBtn.grid(row=9, column=0, columnspan=2, pady=5)
+
+    def deleteEventView(self, title):
+        self.controler.passDeleteInfo(title)
+        self.organizerProfileView()
+
 
     def clickedEditEventBtn(self, entryTitleEvent, entryDescriptionEvent, entryLocationEvent, entryDateEvent, entryCapacityEvent, clicked, entrySubCategories, clickedStatus):
         title = entryTitleEvent.get()
