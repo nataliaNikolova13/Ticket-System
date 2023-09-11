@@ -69,7 +69,7 @@ class Layout():
                 menubar.add_cascade(label="Profile", menu=profileMenu,command="")
                 profileMenu.add_command(label="View Profile", command=self.organizerProfileView)
                 profileMenu.add_command(label="Create event", command=self.createEvent)
-                profileMenu.add_command(label="View statistics", command="")
+                # profileMenu.add_command(label="View statistics", command="")
             else:
                 menubar.add_cascade(label="Profile", menu=profileMenu,command="")    
                 profileMenu.add_command(label="View Profile", command=self.userProfileView)
@@ -139,9 +139,13 @@ class Layout():
         email = entryEmail.get()
         password = entryPassword.get()
         radio = radio_var.get()
-        self.controler.passRegistrationInfo(userName, email, password, radio)
-        self.homePage()
-        self.createMenu()
+        if userName == "" or email == "" or password == "":
+            errorLable = Label(self.registrtionFrame, text="You have to enter valid information", font=('Arial', 10))
+            errorLable.grid(row=18, column=0, columnspan=2, sticky="nswe")  
+        else:
+            self.controler.passRegistrationInfo(userName, email, password, radio)
+            self.homePage()
+            self.createMenu()
 
 
     def registration(self):
@@ -511,9 +515,9 @@ class Layout():
         bookTicketsBtn.grid(row = 12, sticky="nswe", pady=5, columnspan=2)
         if self.controler.currentRole.name == "Organizer" and result[6] == self.controler.currentUser.userName:
             editEventBtn = Button(self.secondFrame, text="Edit Event", font=('Arial', 11), command=lambda:self.editEventView(title), width=40)
-            editEventBtn.grid(row = 14, sticky="nswe", pady=5)
+            editEventBtn.grid(row = 14, sticky="nswe", pady=5, columnspan=2)
             deleteEventBtn = Button(self.secondFrame, text="Delete Event", font=('Arial', 11), command=lambda:self.deleteEventView(title), width=40)
-            deleteEventBtn.grid(row = 15, sticky="nswe", pady=5)
+            deleteEventBtn.grid(row = 15, sticky="nswe", pady=5, columnspan=2)
         if self.controler.currentUser != False and self.controler.boolUserHasBookedTicket(title) == True:
             unbookTicketBtn = Button(self.secondFrame, text="Unbook One Ticket", font=('Arial', 11), command=lambda:self.unbookOneTicketView(title), width=20)
             unbookTicketBtn.grid(row = 13, column=0, sticky="nswe", pady=(5, 20), ipadx=5)
@@ -693,18 +697,18 @@ class Layout():
     def bookTicket(self, title, org, boolSpaceLeft, sub, status):
         res = self.controler.bookTicket(title, sub)
         if res == False:
-            errorLable = Label(self.secondFrame, text="You have to logged in to book tickets")
-            errorLable.grid(row=16)    
+            errorLable = Label(self.secondFrame, text="You have to be logged in to book tickets")
+            errorLable.grid(row=16, columnspan=2)    
         else:
             if boolSpaceLeft == False:
                 errorLable = Label(self.secondFrame, text="There are no more tickets left")
-                errorLable.grid(row=16)
+                errorLable.grid(row=16, columnspan=2)
             elif status == "Past":
                 errorLable = Label(self.secondFrame, text="You can't book a ticket, the event has already past")
-                errorLable.grid(row=16) 
+                errorLable.grid(row=16, columnspan=2) 
             elif status == "Upcoming":
                 errorLable = Label(self.secondFrame, text="The tickets haven't been released yet")
-                errorLable.grid(row=16)       
+                errorLable.grid(row=16, columnspan=2)       
             else:
                 self.passMoreInfoBtn(title, org)    
                 self.confirmationWindow()
@@ -785,10 +789,16 @@ class Layout():
 
     def clickedCreateEventBtn(self, entryTitleEvent, entryDescriptionEvent, entryLocationEvent, entryDateEvent, entryCapacityEvent, clicked, entrySubCategories, clickedStatus):
         title = entryTitleEvent.get()
+        if title == "":
+            title = "Unknown"
         description = entryDescriptionEvent.get("1.0",END)
         location = entryLocationEvent.get()
+        if location == "":
+            location = "Unknown"
         date = entryDateEvent.get()
         capacity = entryCapacityEvent.get()
+        if capacity == "":
+            capacity = 0
         category = clicked.get()
         subCategories = entrySubCategories.get()
         status = clickedStatus.get()
@@ -909,6 +919,10 @@ class Layout():
 
         self.SearchBtn = Button(self.secondFrame, width=40, text="Search", font=('Arial', 10), command=lambda :self.clickedSearchBtn(self.entryKeyword, self.secondFrame, self.startDateEntry, self.endDateEntry))
         self.SearchBtn.grid(row=5, column=0, columnspan=2, sticky="nswe",pady=10, ipadx=20)
+
+        if len(result) == 0:
+            errorLable = Label(self.secondFrame, text="There are no search results found")
+            errorLable.grid(row=6, columnspan=2)
 
         self.printEvent(self.secondFrame, result)
         

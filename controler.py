@@ -134,6 +134,14 @@ class Controler():
         connEvent.close()
         return result
     
+    def getAllByOrgSorted(self):
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursEvent.execute('SELECT * FROM EVENTS WHERE (Organizer = ?) ORDER BY SeatsTaken DESC', (self.currentUser.userName,))
+        result = cursEvent.fetchall()
+        connEvent.close()
+        return result
+    
     def getAllTicketsByUser(self):
         username = self.currentUser.userName
         connTicket = sqlite3.connect('tickets.db')
