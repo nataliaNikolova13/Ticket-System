@@ -67,7 +67,8 @@ class Controler():
 
     def passCreateEventInfo(self, title, description, location, date, capacity, category, subCategories, status):
         organizer = self.currentUser.userName
-        list = date.split('/')
+        list = date.strip(' .г')
+        list = list.split('.')
         
         event = EventCreator(title, description, location, int(list[0]), int(list[1]), int(list[2]), organizer, int(capacity), category, status, subCategories)
         
@@ -207,8 +208,10 @@ class Controler():
         return result
     
     def searchByInterval(self, start, end):
-        start = start.split('/')
-        end = end.split('/')
+        start = start.strip(" .г")
+        start = start.split('.')
+        end = end.strip(" .г")
+        end = end.split('.')
         startDate = datetime.datetime(int(start[2]), int(start[1]), int(start[0]))
         endDate = datetime.datetime(int(end[2]), int(end[1]), int(end[0]))
         connEvent = sqlite3.connect('events.db')
