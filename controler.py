@@ -72,7 +72,8 @@ class Controler():
         event = EventCreator(title, description, location, int(list[0]), int(list[1]), int(list[2]), organizer, int(capacity), category, status, subCategories)
         
         event.addToDataBase()
-        list = date.split('/')
+        self.updateEventStatus()
+        # list = date.split('/')
 
     def passEditEventInfo(self, title, description, location, date, capacity, category, subCategories, status):
         organizer = self.currentUser.userName
@@ -84,6 +85,7 @@ class Controler():
         result = cursEvent.fetchone()
         connEvent.commit()
         connEvent.close()
+        self.updateEventStatus()
 
     def passDeleteInfo(self, title):
         connEvent = sqlite3.connect('events.db')
@@ -140,6 +142,53 @@ class Controler():
         result = cursTicket.fetchall()
         connTicket.close()
         return result
+    
+    def boolUserHasBookedTicket(self, title):
+        username = self.currentUser.userName
+        connTicket = sqlite3.connect('tickets.db')
+        cursTicket = connTicket.cursor()
+        cursTicket.execute('SELECT * FROM TICKETS WHERE(Username = ? AND Title = ?)', (username, title))
+        result = cursTicket.fetchone()
+        connTicket.close()
+        if result is None:
+            return False
+        else:
+            return True
+        
+    def unbookOneTicket(self, title):
+        username = self.currentUser.userName
+        connTicket = sqlite3.connect('tickets.db')
+        cursTicket = connTicket.cursor()
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursTicket.execute('UPDATE TICKETS SET numTickets=numTickets-1 WHERE (Username = ? AND Title = ?)', (username, title))
+        cursEvent.execute("UPDATE EVENTS SET SeatsTaken=SeatsTaken-1 WHERE (Title = ?)", (title,))
+        connTicket.commit()
+        connEvent.commit()
+        connTicket.close()
+        connEvent.close()
+
+    def unbookAllTicket(self, title):   
+        username = self.currentUser.userName
+        connTicket = sqlite3.connect('tickets.db')
+        cursTicket = connTicket.cursor()
+        connEvent = sqlite3.connect('events.db')
+        cursEvent = connEvent.cursor()
+        cursTicket.execute('SELECT * FROM TICKETS WHERE (Username = ? AND Title = ?)', (username, title))
+        result = cursTicket.fetchone()
+        numTickets = int(result[2])
+        cursTicket.execute('DELETE FROM TICKETS WHERE (Username = ? AND Title = ?)', (username, title))
+
+        cursEvent.execute('SELECT SeatsTaken FROM EVENTS WHERE (Title = ?)', (title, ))
+        numSeats = cursEvent.fetchone()
+        # print(numSeats[0])
+        numSeats = numSeats[0]
+        cursEvent.execute("UPDATE EVENTS SET SeatsTaken=? WHERE (Title = ?)", (numSeats - numTickets, title))
+        connTicket.commit()
+        connEvent.commit()
+        connTicket.close()
+        connEvent.close() 
+
     
     def searchByKeyword(self, keyword):
         connEvent = sqlite3.connect('events.db')

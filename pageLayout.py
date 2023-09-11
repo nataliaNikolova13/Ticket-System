@@ -107,7 +107,7 @@ class Layout():
         self.entryPasswordLable.grid(row=2, column=0, sticky="nswe", pady=5, padx=5)
         self.entryUsername = Entry(self.logInFrame, bg="white")
         self.entryUsername.grid(row=1, column=1, sticky="nswe", pady=5, padx=5)
-        self.entryPassword = Entry(self.logInFrame, bg="white")
+        self.entryPassword = Entry(self.logInFrame, bg="white", show="*")
         self.entryPassword.grid(row=2, column=1, sticky="nswe", pady=5, padx=5)
         self.UsrRadionBtn = Radiobutton(self.logInFrame, text="Log In as a User", variable=radio_var, value=1, font=('Arial', 10))
         self.UsrRadionBtn.grid(row=4, column=0, columnspan=2, sticky="nswe")
@@ -160,7 +160,7 @@ class Layout():
         self.entryEmailLable.grid(row=2, column=0, sticky="nswe", pady=5, padx=5)
         self.entryUsername = Entry(self.registrtionFrame, bg="white")
         self.entryUsername.grid(row=1, column=1, sticky="nswe", pady=5, padx=5)
-        self.entryPassword = Entry(self.registrtionFrame, bg="white")
+        self.entryPassword = Entry(self.registrtionFrame, bg="white", show="*")
         self.entryPassword.grid(row=3, column=1, sticky="nswe", pady=5, padx=5)   
         self.entryEmail = Entry(self.registrtionFrame, bg="white")
         self.entryEmail.grid(row=2, column=1, sticky="nswe", pady=5, padx=5)  
@@ -467,7 +467,7 @@ class Layout():
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
         titleLable = Label(self.secondFrame, text=title, font=('Arial', 13), justify=LEFT)
-        titleLable.grid(row=0, sticky="nw", pady=10)
+        titleLable.grid(row=0, sticky="nw", pady=10, columnspan=2)
         result = self.controler.getAllInfoAboutEvent(title, organizator)
         descr = "Description: " + result[1]
         splitDescr = textwrap.wrap(descr, 80)
@@ -497,25 +497,52 @@ class Layout():
         status = "Status: " + result[11]
         labStatus = Label(self.secondFrame, text = status, font=('Arial', 11), justify=LEFT)
         
-        labDate.grid(row=1, sticky="w")
-        labDescr.grid(row=9, sticky="w", pady=10)
-        labLocation.grid(row=2, sticky="w")
-        labOrg.grid(row=3, sticky="w")
-        labCapacity.grid(row=7, sticky="w")
-        labSeats.grid(row=8, sticky="w")
-        labCat.grid(row=4, sticky="w")
-        labSubCat.grid(row=5, sticky="w")
-        labStatus.grid(row=6, sticky="w")
+        labDate.grid(row=1, sticky="w", columnspan=2)
+        labDescr.grid(row=9, sticky="w", pady=10, columnspan=2)
+        labLocation.grid(row=2, sticky="w", columnspan=2)
+        labOrg.grid(row=3, sticky="w", columnspan=2)
+        labCapacity.grid(row=7, sticky="w", columnspan=2)
+        labSeats.grid(row=8, sticky="w", columnspan=2)
+        labCat.grid(row=4, sticky="w", columnspan=2)
+        labSubCat.grid(row=5, sticky="w", columnspan=2)
+        labStatus.grid(row=6, sticky="w", columnspan=2)
 
-        bookTicketsBtn = Button(self.secondFrame, text="Book Tickets", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft, sub, result[11]), width=40)
-        bookTicketsBtn.grid(row = 12, sticky="nswe", pady=5)
+        bookTicketsBtn = Button(self.secondFrame, text="Book Ticket", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft, sub, result[11]), width=40)
+        bookTicketsBtn.grid(row = 12, sticky="nswe", pady=5, columnspan=2)
         if self.controler.currentRole.name == "Organizer" and result[6] == self.controler.currentUser.userName:
             editEventBtn = Button(self.secondFrame, text="Edit Event", font=('Arial', 11), command=lambda:self.editEventView(title), width=40)
-            editEventBtn.grid(row = 13, sticky="nswe", pady=5)
+            editEventBtn.grid(row = 14, sticky="nswe", pady=5)
             deleteEventBtn = Button(self.secondFrame, text="Delete Event", font=('Arial', 11), command=lambda:self.deleteEventView(title), width=40)
-            deleteEventBtn.grid(row = 14, sticky="nswe", pady=5)
+            deleteEventBtn.grid(row = 15, sticky="nswe", pady=5)
+        if self.controler.currentUser != False and self.controler.boolUserHasBookedTicket(title) == True:
+            unbookTicketBtn = Button(self.secondFrame, text="Unbook One Ticket", font=('Arial', 11), command=lambda:self.unbookOneTicketView(title), width=20)
+            unbookTicketBtn.grid(row = 13, column=0, sticky="nswe", pady=(5, 20), ipadx=5)
+            unbookAllTicketsBtn = Button(self.secondFrame, text="Unbook All Tickets", font=('Arial', 11), command=lambda:self.unbookAllTicketView(title), width=20)
+            unbookAllTicketsBtn.grid(row = 13, column=1, sticky="nswe", pady=(5, 20), ipadx=5)
 
-      
+
+    def unbookOneTicketView(self, title):
+        self.controler.unbookOneTicket(title) 
+        self.userProfileView()
+        confWindow = Toplevel(self.root)
+        confWindow.title("Confirmation")
+        confWindow.geometry("250x150")
+        text = Label(confWindow, text="You have successfully \n unbooked One Ticket", font=('Arial',12))
+        text2 = Label(confWindow, text="We are sorry you couldn't make it!", font=('Arial',10))
+        text.pack(pady=(20, 0))
+        text2.pack(pady=10)
+        
+
+    def unbookAllTicketView(self, title):
+        self.controler.unbookAllTicket(title) 
+        self.userProfileView()
+        confWindow = Toplevel(self.root)
+        confWindow.title("Confirmation")
+        confWindow.geometry("250x150")
+        text = Label(confWindow, text="You have successfully \n unbooked All your Tickets", font=('Arial',12))
+        text2 = Label(confWindow, text="We are sorry you couldn't make it!", font=('Arial',10))
+        text.pack(pady=(20, 0))
+        text2.pack(pady=10)
 
     def editEventView(self, title):
         result = self.controler.getEventByTitle(title)
@@ -667,17 +694,17 @@ class Layout():
         res = self.controler.bookTicket(title, sub)
         if res == False:
             errorLable = Label(self.secondFrame, text="You have to logged in to book tickets")
-            errorLable.grid(row=14)    
+            errorLable.grid(row=16)    
         else:
             if boolSpaceLeft == False:
                 errorLable = Label(self.secondFrame, text="There are no more tickets left")
-                errorLable.grid(row=14)
+                errorLable.grid(row=16)
             elif status == "Past":
                 errorLable = Label(self.secondFrame, text="You can't book a ticket, the event has already past")
-                errorLable.grid(row=14) 
+                errorLable.grid(row=16) 
             elif status == "Upcoming":
                 errorLable = Label(self.secondFrame, text="The tickets haven't been released yet")
-                errorLable.grid(row=14)       
+                errorLable.grid(row=16)       
             else:
                 self.passMoreInfoBtn(title, org)    
                 self.confirmationWindow()
