@@ -14,6 +14,7 @@ class Layout():
         self.controler = Controler()
 
         self.createMenu()
+        
         self.logInFrame = Frame(self.root)
         self.logInFrame.pack() #fill=BOTH, expand=1
         self.registrtionFrame = Frame(self.root)
@@ -40,6 +41,7 @@ class Layout():
         # self.statFrame.pack()
         self.secondFrame = Frame(self.root)
         # self.scrollBar()
+        self.homePage()
 
     def createMenu(self):
 
@@ -393,6 +395,7 @@ class Layout():
         self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="w")
+        
 
         lableTitle = Label(self.secondFrame, text="Check out the most visited event of each category", font=('Arial', 14))
         lableTitle.grid(row=0, pady=(10, 10), padx=10)
@@ -509,15 +512,15 @@ class Layout():
         status = "Status: " + result[11]
         labStatus = Label(self.secondFrame, text = status, font=('Arial', 11), justify=LEFT, padx=10)
         
-        labDate.grid(row=1, sticky="w", columnspan=2)
-        labDescr.grid(row=9, sticky="w", pady=10, columnspan=2)
-        labLocation.grid(row=2, sticky="w", columnspan=2)
-        labOrg.grid(row=3, sticky="w", columnspan=2)
-        labCapacity.grid(row=7, sticky="w", columnspan=2)
-        labSeats.grid(row=8, sticky="w", columnspan=2)
-        labCat.grid(row=4, sticky="w", columnspan=2)
-        labSubCat.grid(row=5, sticky="w", columnspan=2)
-        labStatus.grid(row=6, sticky="w", columnspan=2)
+        labDate.grid(row=1, sticky="w", columnspan=2, padx=2)
+        labDescr.grid(row=9, sticky="w", pady=10, columnspan=2, padx=2)
+        labLocation.grid(row=2, sticky="w", columnspan=2, padx=2)
+        labOrg.grid(row=3, sticky="w", columnspan=2, padx=2)
+        labCapacity.grid(row=7, sticky="w", columnspan=2, padx=2)
+        labSeats.grid(row=8, sticky="w", columnspan=2, padx=2)
+        labCat.grid(row=4, sticky="w", columnspan=2, padx=2)
+        labSubCat.grid(row=5, sticky="w", columnspan=2, padx=2)
+        labStatus.grid(row=6, sticky="w", columnspan=2, padx=2)
 
         bookTicketsBtn = Button(self.secondFrame, text="Book Ticket", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft, sub, result[11]), width=40)
         bookTicketsBtn.grid(row = 12, sticky="nswe", pady=5, columnspan=2, padx=(10, 0))
@@ -698,8 +701,8 @@ class Layout():
         tLabel = Label(self.secondFrame, text = "You have booked tickets for: ", font=('Arial', 13), justify=LEFT)
         tLabel.grid(row=1, sticky="nw", pady=(0, 10), padx=10)  
 
-        lf = ttk.LabelFrame(self.secondFrame, text='Ticket')
-        lf.grid(column=0, row=0, padx=20, pady=20)
+        # lf = ttk.LabelFrame(self.secondFrame, text='Ticket')
+        # lf.grid(column=0, row=0, padx=20, pady=20)
 
         # lblFrame = ttk.LabelFrame(self.secondFrame, text="Ticket", style='primary.TLabelframe') #, style='info.TLabelframe'
         # lblFrame.grid(column=0, row=2, padx=20, pady=20)
