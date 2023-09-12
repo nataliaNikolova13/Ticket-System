@@ -78,7 +78,7 @@ class Controler():
 
     def passEditEventInfo(self, title, description, location, date, capacity, category, subCategories, status):
         organizer = self.currentUser.userName
-        list = date.split('/')
+        list = date.split('.')
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
         cursEvent.execute('UPDATE EVENTS SET Description = ?, Location = ?, Date = ?, Month = ?, Year = ?, NumAvailableSeats = ?, Category = ?, Subcategory = ?, Status = ? WHERE (Title = ?)', (description, location, int(list[0]), int(list[1]), int(list[2]), capacity, category, subCategories, status, title))

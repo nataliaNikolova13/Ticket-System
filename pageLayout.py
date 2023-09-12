@@ -36,6 +36,8 @@ class Layout():
         self.userFrame.pack()
         self.searchFrame = Frame(self.root)
         self.searchFrame.pack()
+        # self.statFrame = Frame(self.root)
+        # self.statFrame.pack()
         self.secondFrame = Frame(self.root)
         # self.scrollBar()
 
@@ -71,7 +73,7 @@ class Layout():
                 menubar.add_cascade(label="Profile", menu=profileMenu,command="")
                 profileMenu.add_command(label="View Profile", command=self.organizerProfileView)
                 profileMenu.add_command(label="Create event", command=self.createEvent)
-                # profileMenu.add_command(label="View statistics", command="")
+                profileMenu.add_command(label="View statistics", command=self.viewStatPage)
             else:
                 menubar.add_cascade(label="Profile", menu=profileMenu,command="")    
                 profileMenu.add_command(label="View Profile", command=self.userProfileView)
@@ -196,8 +198,8 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        self.titleAllEvents = Label(self.secondFrame, text="All events", justify=CENTER, font=('Arial', 13))
-        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.titleAllEvents = Label(self.secondFrame, text="All events", justify=LEFT, font=('Arial', 14))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="w", pady=(10, 0), padx=20)   
         self.printAllEvent(self.secondFrame)
 
     def concertPage(self):
@@ -214,8 +216,8 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        self.titleAllEvents = Label(self.secondFrame, text="All concerts", justify=CENTER, font=('Arial', 13))
-        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.titleAllEvents = Label(self.secondFrame, text="All concerts", justify=LEFT, font=('Arial', 14))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="w", pady=(10, 0), padx=20)   
         self.printAllConcerts(self.secondFrame)    
 
     def festivalPage(self):
@@ -232,8 +234,8 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        self.titleAllEvents = Label(self.secondFrame, text="All Festivals", justify=CENTER, font=('Arial', 13))
-        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.titleAllEvents = Label(self.secondFrame, text="All Festivals", justify=LEFT, font=('Arial', 14))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="w", pady=(10, 0), padx=20)   
         self.printAllFestivals(self.secondFrame)   
 
     def seminarsPage(self):
@@ -250,8 +252,8 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        self.titleAllEvents = Label(self.secondFrame, text="All Seminars", justify=CENTER, font=('Arial', 13))
-        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.titleAllEvents = Label(self.secondFrame, text="All Seminars", justify=LEFT, font=('Arial', 14))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="w", pady=(10, 0), padx=20)   
         self.printAllSeminars(self.secondFrame)   
 
     def exhibitionsPage(self):
@@ -268,8 +270,8 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        self.titleAllEvents = Label(self.secondFrame, text="All Exhibitions", justify=CENTER, font=('Arial', 13))
-        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.titleAllEvents = Label(self.secondFrame, text="All Exhibitions", justify=LEFT, font=('Arial', 14))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="w", pady=(10, 0), padx=20)   
         self.printAllExhibitions(self.secondFrame)      
 
     def charityPage(self):
@@ -286,8 +288,8 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        self.titleAllEvents = Label(self.secondFrame, text="All Charities", justify=CENTER, font=('Arial', 13))
-        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.titleAllEvents = Label(self.secondFrame, text="All Charities", justify=LEFT, font=('Arial', 14))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="w", pady=(10, 0), padx=20)   
         self.printAllCharities(self.secondFrame)   
 
     def sportPage(self):
@@ -304,8 +306,8 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        self.titleAllEvents = Label(self.secondFrame, text="All Sport Events", justify=CENTER, font=('Arial', 13))
-        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.titleAllEvents = Label(self.secondFrame, text="All Sport Events", justify=LEFT, font=('Arial', 14))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="w", pady=(10, 0), padx=20)   
         self.printAllSports(self.secondFrame) 
 
     def theaterPage(self):
@@ -322,8 +324,8 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        self.titleAllEvents = Label(self.secondFrame, text="All Theater & Art Events", justify=CENTER, font=('Arial', 13))
-        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)   
+        self.titleAllEvents = Label(self.secondFrame, text="All Theater & Art Events", justify=LEFT, font=('Arial', 14))
+        self.titleAllEvents.grid(row=0, column=0, columnspan=2, sticky="w", pady=(10, 0), padx=20)   
         self.printAllTheater(self.secondFrame) 
 
     def printAllTheater(self, frame):
@@ -390,10 +392,10 @@ class Layout():
         self.myCanvas.configure(yscrollcommand=self.myScrollbar)
         self.myCanvas.bind('<Configure>', lambda e: self.myCanvas.configure(scrollregion=self.myCanvas.bbox("all")))
         self.secondFrame = Frame(self.myCanvas)
-        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
+        self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="w")
 
-        lableTitle = Label(self.secondFrame, text="Check out the most visited event of each category", font=('Arial', 13))
-        lableTitle.grid(row=0, pady=(10, 10))
+        lableTitle = Label(self.secondFrame, text="Check out the most visited event of each category", font=('Arial', 14))
+        lableTitle.grid(row=0, pady=(10, 10), padx=10)
 
 
         result = []
@@ -582,9 +584,9 @@ class Layout():
         self.entryLocationEvent.insert(0, result[2])
         self.entryLocationEvent.grid(row=3, column=1, sticky="nswe", pady=5, padx=5)
 
-        self.entryDateEventLable = Label(self.editEventFrame, text="Enter Date (dd/mm/yyyy)", justify=CENTER, font=('Arial', 10))
+        self.entryDateEventLable = Label(self.editEventFrame, text="Enter Date", justify=CENTER, font=('Arial', 10))
         self.entryDateEventLable.grid(row=4, column=0, sticky="nswe", pady=5, padx=5)
-        date = str(result[3]) + '/' + str(result[4]) + '/' + str(result[5])
+        date = str(result[3]) + '.' + str(result[4]) + '.' + str(result[5])
         self.entryDateEvent = Entry(self.editEventFrame, bg="white")
         self.entryDateEvent.insert(0, date)
         self.entryDateEvent.grid(row=4, column=1, sticky="nswe", pady=5, padx=5)
@@ -683,11 +685,16 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")   
 
+        # lblFrame = tb.LabelFrame(self.secondFrame, text="Ticket")
+
         orgLabel = Label(self.secondFrame, text = "User: " + self.controler.currentUser.userName, font=('Arial', 13), justify=LEFT)
         orgLabel.grid(row=0, sticky="nw", pady=15)  
 
         tLabel = Label(self.secondFrame, text = "You have booked tickets for: ", font=('Arial', 13), justify=LEFT)
         tLabel.grid(row=1, sticky="nw", pady=(0, 10))  
+
+        # lblFrame = ttk.LabelFrame(self.secondFrame, text="Ticket", style='primary.TLabelframe') #, style='info.TLabelframe'
+        # lblFrame.grid(column=0, row=2, padx=20, pady=20)
 
         result = self.controler.getAllTicketsByUser()
         count = 2
@@ -936,6 +943,8 @@ class Layout():
 
         self.printEvent(self.secondFrame, result)
         
+
+
         
     
     def destroyFrames(self):
@@ -951,6 +960,7 @@ class Layout():
         self.orgFrame.destroy()
         self.userFrame.destroy()
         self.searchFrame.destroy()
+        # self.statFrame.destroy()
         
           
         
