@@ -73,7 +73,7 @@ class Layout():
                 menubar.add_cascade(label="Profile", menu=profileMenu,command="")
                 profileMenu.add_command(label="View Profile", command=self.organizerProfileView)
                 profileMenu.add_command(label="Create event", command=self.createEvent)
-                profileMenu.add_command(label="View statistics", command=self.viewStatPage)
+                # profileMenu.add_command(label="View statistics", command=self.viewStatPage)
             else:
                 menubar.add_cascade(label="Profile", menu=profileMenu,command="")    
                 profileMenu.add_command(label="View Profile", command=self.userProfileView)
@@ -478,36 +478,36 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        titleLable = Label(self.secondFrame, text=title, font=('Arial', 13), justify=LEFT)
-        titleLable.grid(row=0, sticky="nw", pady=10, columnspan=2)
+        titleLable = Label(self.secondFrame, text=title, font=('Arial', 15), justify=LEFT)
+        titleLable.grid(row=0, sticky="nw", pady=10, columnspan=2, padx=10)
         result = self.controler.getAllInfoAboutEvent(title, organizator)
         descr = "Description: " + result[1]
         splitDescr = textwrap.wrap(descr, 80)
         descr = '\n'.join(splitDescr)
-        labDescr = Label(self.secondFrame, text=descr, justify=LEFT, font=('Arial', 11))
+        labDescr = Label(self.secondFrame, text=descr, justify=LEFT, font=('Arial', 11), padx=10)
         location = "Location: " + result[2]
-        labLocation = Label(self.secondFrame, text=location, font=('Arial', 11), justify=LEFT)
+        labLocation = Label(self.secondFrame, text=location, font=('Arial', 11), justify=LEFT, padx=10)
         date = "Date: " + str(result[3]) + '.' + str(result[4]) + '.' + str(result[5])
-        labDate = Label(self.secondFrame, text=date, font=('Arial', 11), justify=LEFT)
+        labDate = Label(self.secondFrame, text=date, font=('Arial', 11), justify=LEFT, padx=10)
         org = "Organizer: " + result[6]
-        labOrg = Label(self.secondFrame, text = org, font=('Arial', 11), justify=LEFT)
+        labOrg = Label(self.secondFrame, text = org, font=('Arial', 11), justify=LEFT, padx=10)
         capacity = "Capacity: " + str(result[7])
-        labCapacity = Label(self.secondFrame, text = capacity, font=('Arial', 11), justify=LEFT)
+        labCapacity = Label(self.secondFrame, text = capacity, font=('Arial', 11), justify=LEFT, padx=10)
         takenSeats = "Seats sold: " + str(result[8])
         boolSpaceLeft = True
         if result[8] >= result[7]:
             boolSpaceLeft = False
-        labSeats = Label(self.secondFrame, text = takenSeats, font=('Arial', 11), justify=LEFT)
+        labSeats = Label(self.secondFrame, text = takenSeats, font=('Arial', 11), justify=LEFT, padx=10)
         category = "Category: " + result[9]
-        labCat = Label(self.secondFrame, text = category, font=('Arial', 11), justify=LEFT)
+        labCat = Label(self.secondFrame, text = category, font=('Arial', 11), justify=LEFT, padx=10)
         subCat = "Subcategories: " + result[10]
         splitCat = textwrap.wrap(subCat, 60)
         subCat = '\n'.join(splitCat)
         
         sub = result[10]
-        labSubCat = Label(self.secondFrame, text = subCat, font=('Arial', 11), justify=LEFT)
+        labSubCat = Label(self.secondFrame, text = subCat, font=('Arial', 11), justify=LEFT, padx=10)
         status = "Status: " + result[11]
-        labStatus = Label(self.secondFrame, text = status, font=('Arial', 11), justify=LEFT)
+        labStatus = Label(self.secondFrame, text = status, font=('Arial', 11), justify=LEFT, padx=10)
         
         labDate.grid(row=1, sticky="w", columnspan=2)
         labDescr.grid(row=9, sticky="w", pady=10, columnspan=2)
@@ -520,17 +520,17 @@ class Layout():
         labStatus.grid(row=6, sticky="w", columnspan=2)
 
         bookTicketsBtn = Button(self.secondFrame, text="Book Ticket", font=('Arial', 11), command=lambda:self.bookTicket(title, organizator, boolSpaceLeft, sub, result[11]), width=40)
-        bookTicketsBtn.grid(row = 12, sticky="nswe", pady=5, columnspan=2)
+        bookTicketsBtn.grid(row = 12, sticky="nswe", pady=5, columnspan=2, padx=(10, 0))
         if self.controler.currentRole.name == "Organizer" and result[6] == self.controler.currentUser.userName:
             editEventBtn = Button(self.secondFrame, text="Edit Event", font=('Arial', 11), command=lambda:self.editEventView(title), width=40)
-            editEventBtn.grid(row = 14, sticky="nswe", pady=5, columnspan=2)
+            editEventBtn.grid(row = 14, sticky="nswe", pady=5, columnspan=2, padx=(10, 0))
             deleteEventBtn = Button(self.secondFrame, text="Delete Event", font=('Arial', 11), command=lambda:self.deleteEventView(title), width=40)
-            deleteEventBtn.grid(row = 15, sticky="nswe", pady=(5, 20), columnspan=2)
+            deleteEventBtn.grid(row = 15, sticky="nswe", pady=(5, 20), columnspan=2, padx=(10, 0))
         if self.controler.currentUser != False and self.controler.boolUserHasBookedTicket(title) == True:
-            unbookTicketBtn = Button(self.secondFrame, text="Unbook One Ticket", font=('Arial', 11), command=lambda:self.unbookOneTicketView(title), width=20)
-            unbookTicketBtn.grid(row = 13, column=0, sticky="nswe", pady=5, padx=(0, 2))
-            unbookAllTicketsBtn = Button(self.secondFrame, text="Unbook All Tickets", font=('Arial', 11), command=lambda:self.unbookAllTicketView(title), width=20)
-            unbookAllTicketsBtn.grid(row = 13, column=1, sticky="nswe", pady=5, padx=(0, 2))
+            unbookTicketBtn = Button(self.secondFrame, text="Unbook One Ticket", font=('Arial', 11), command=lambda:self.unbookOneTicketView(title), width=16)
+            unbookTicketBtn.grid(row = 13, column=0, sticky="nswe", pady=5, padx=(10, 2))
+            unbookAllTicketsBtn = Button(self.secondFrame, text="Unbook All Tickets", font=('Arial', 11), command=lambda:self.unbookAllTicketView(title), width=16)
+            unbookAllTicketsBtn.grid(row = 13, column=1, sticky="nswe", pady=5, padx=(2, 0))
 
 
     def unbookOneTicketView(self, title):
@@ -666,11 +666,16 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")   
 
-        orgLabel = Label(self.secondFrame, text = "User: " + self.controler.currentUser.userName, font=('Arial', 13), justify=LEFT)
-        orgLabel.grid(row=0, sticky="nw", pady=15) 
+        orgLabel = Label(self.secondFrame, text = "User: " + self.controler.currentUser.userName, font=('Arial', 14), justify=LEFT)
+        orgLabel.grid(row=0, sticky="nw", pady=(10, 0), padx=15) 
+
+        orgEventLabel = Label(self.secondFrame, text = "Your Events:", font=('Arial', 13), justify=LEFT)
+        orgEventLabel.grid(row=1, sticky="nw", pady=10, padx=15) 
 
         result = self.controler.printAllByOrganizer()
         self.printEvent(self.secondFrame, result)
+
+        
 
     def userProfileView(self):
         self.destroyFrames()
@@ -687,11 +692,14 @@ class Layout():
 
         # lblFrame = tb.LabelFrame(self.secondFrame, text="Ticket")
 
-        orgLabel = Label(self.secondFrame, text = "User: " + self.controler.currentUser.userName, font=('Arial', 13), justify=LEFT)
-        orgLabel.grid(row=0, sticky="nw", pady=15)  
+        orgLabel = Label(self.secondFrame, text = "User: " + self.controler.currentUser.userName, font=('Arial', 14), justify=LEFT)
+        orgLabel.grid(row=0, sticky="nw", pady=15, padx=10)  
 
         tLabel = Label(self.secondFrame, text = "You have booked tickets for: ", font=('Arial', 13), justify=LEFT)
-        tLabel.grid(row=1, sticky="nw", pady=(0, 10))  
+        tLabel.grid(row=1, sticky="nw", pady=(0, 10), padx=10)  
+
+        lf = ttk.LabelFrame(self.secondFrame, text='Ticket')
+        lf.grid(column=0, row=0, padx=20, pady=20)
 
         # lblFrame = ttk.LabelFrame(self.secondFrame, text="Ticket", style='primary.TLabelframe') #, style='info.TLabelframe'
         # lblFrame.grid(column=0, row=2, padx=20, pady=20)
@@ -699,10 +707,12 @@ class Layout():
         result = self.controler.getAllTicketsByUser()
         count = 2
         for i in range(0, len(result)):
-            titleLable = Label(self.secondFrame, text="Event: " + result[i][1], font=('Arial', 12), justify=LEFT)
-            titleLable.grid(row=count, sticky="w")
-            seatsLable = Label(self.secondFrame, text="Number of seats: " + str(result[i][2]), font=('Arial', 12), justify=LEFT)
-            seatsLable.grid(row=count+1, sticky="w", pady=(5, 10))
+            lf = tb.LabelFrame(self.secondFrame, text='Ticket', width=60, relief="groove", padding=10, style='primary.TLabelframe')
+            lf.grid(column=0, row=count, padx=15, pady=10, sticky="w")
+            titleLable = Label(lf, text="Event: " + result[i][1], font=('Arial', 12), justify=LEFT, width=40)
+            titleLable.grid(row=count+1, sticky="w")
+            seatsLable = Label(lf, text="Number of seats: " + str(result[i][2]), font=('Arial', 12), justify=LEFT, width=40)
+            seatsLable.grid(row=count+2, sticky="w", pady=(5, 10))
             count = count + 5
 
 
@@ -835,11 +845,11 @@ class Layout():
         self.secondFrame = Frame(self.myCanvas)
         self.myCanvas.create_window((0,0), window=self.secondFrame, anchor="nw")
 
-        lableTitle = Label(self.secondFrame, text="Check out what we have for you, based on you previous bookings", font=('Arial', 13))
-        lableTitle.grid(row=0, pady=(10, 10))
+        lableTitle = Label(self.secondFrame, text="Check out what we have for you, based on you previous bookings", font=('Arial', 14))
+        lableTitle.grid(row=0, pady=(10, 10), padx=10)
         if self.controler.getTopGenres() == False:
-            errorLable = Label(self.secondFrame, justify=LEFT, text="Make your first booking, so that we can give you a recommendation", font=('Arial', 11))
-            errorLable.grid(row=1, sticky="nw", pady=10)
+            errorLable = Label(self.secondFrame, justify=LEFT, text="Make your first booking, so that we can give you a recommendation", font=('Arial', 12))
+            errorLable.grid(row=1, sticky="nw", pady=10, padx=15)
         else: 
             result = self.controler.getTopGenres()
             self.printEvent(self.secondFrame, result)
