@@ -440,26 +440,30 @@ class Layout():
         count = 2
         for i in range(0, len(result)):
             myFrame = tb.Frame(frame, bootstyle="flatly")
-            myFrame.grid(row=count, pady=20)
-            cat = "The most visited event in " + lst[i]
-            categoryLable = Label(frame, text=cat, font=('Arial', 12), justify=LEFT)
-            categoryLable.grid(row=count-1, sticky="w", pady=5, padx=10)
-            titleLable = Label(frame, text=result[i][0], font=('Arial', 12), justify=LEFT)
+            myFrame.grid(row=count, pady=10, padx=30)
+            cat = "The most visited event in Category: " + lst[i]
+            lf = tb.LabelFrame(frame, text=cat, width=60, relief="groove", padding=10, style='primary.TLabelframe')
+            lf.grid(column=0, row=count-1, padx=15, pady=10, sticky="w")
+            # categoryLable = Label(frame, text=cat, font=('Arial', 12), justify=LEFT)
+            # categoryLable.grid(row=count-1, sticky="w", pady=5, padx=10)
+            titleLable = Label(lf, text=result[i][0], font=('Arial', 12), justify=LEFT)
             titleLable.grid(row=count, sticky="w", padx=15)
             t = "Date: " + str(result[i][3]) + '.' + str(result[i][4]) + '.' + str(result[i][5])
-            dateLable = Label(frame, text=t)
+            dateLable = Label(lf, text=t)
             dateLable.grid(row=count+1, sticky="w", padx=20)
             t = "Location: " + result[i][2]
-            locationLable = Label(frame, text=t)
+            locationLable = Label(lf, text=t)
             locationLable.grid(row =count+2, sticky="w", padx=20)
             t = "Organizer: " + result[i][6]
-            orgLabel = Label(frame, text=t)
+            orgLabel = Label(lf, text=t)
             orgLabel.grid(row=count+3, sticky="w", padx=20)
             t = "Category: " + str(result[i][9]) 
-            categoryLabel = Label(frame, text=t)
+            categoryLabel = Label(lf, text=t)
             categoryLabel.grid(row=count+4, sticky="w", padx=20)
-            moreInfoBtn = Button(frame, text="More Information", font=('Arial', 10), width=20, command=lambda i = i:self.passMoreInfoBtn(result[i][0], result[i][6]))
-            moreInfoBtn.grid(row=count+5, sticky="w", pady=10, padx=10)
+            tl = tb.Separator(lf, orient='horizontal', style='primary.Horizontal.TSeparator')
+            tl.grid(row= count+5, pady=(6,0), padx=(20, 400))
+            moreInfoBtn = Button(lf, text="More Information", font=('Arial', 10), width=20, command=lambda i = i:self.passMoreInfoBtn(result[i][0], result[i][6]))
+            moreInfoBtn.grid(row=count+6, sticky="w", pady=10, padx=10)
             count = count + 10         
 
     def printAllEvent(self, frame):
