@@ -567,7 +567,7 @@ class Layout():
         result = self.controler.getEventByTitle(title)
         self.destroyFrames()
         self.editEventFrame = Frame(self.root)
-        self.editEventFrame.pack(fill=BOTH, expand=1)
+        self.editEventFrame.pack()
         
         self.titleCreateEvent = Label(self.editEventFrame, text="Edit Event", justify=CENTER, font=('Arial', 13))
         self.titleCreateEvent.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)
@@ -762,10 +762,10 @@ class Layout():
     def createEvent(self):
         self.destroyFrames()
         self.createEventFrame = Frame(self.root)
-        self.createEventFrame.pack(fill=BOTH, expand=1)
+        self.createEventFrame.pack()
         
         self.titleCreateEvent = Label(self.createEventFrame, text="Create Event", justify=CENTER, font=('Arial', 13))
-        self.titleCreateEvent.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=5)
+        self.titleCreateEvent.grid(row=0, column=0, columnspan=2, sticky="nswe", pady=(5, 10))
 
         self.entryTitleEventLable = Label(self.createEventFrame, text="Enter Title", justify=CENTER, font=('Arial', 10))
         self.entryTitleEventLable.grid(row=1, column=0, sticky="nswe", pady=5, padx=5)
@@ -782,7 +782,7 @@ class Layout():
         self.entryLocationEvent = Entry(self.createEventFrame, bg="white")
         self.entryLocationEvent.grid(row=3, column=1, sticky="nswe", pady=5, padx=5)
 
-        self.entryDateEventLable = Label(self.createEventFrame, text="Enter Date (dd/mm/yyyy)", justify=CENTER, font=('Arial', 10))
+        self.entryDateEventLable = Label(self.createEventFrame, text="Enter Date", justify=CENTER, font=('Arial', 10))
         self.entryDateEventLable.grid(row=4, column=0, sticky="nswe", pady=5, padx=5)
         self.entryDateEvent = tb.DateEntry(self.createEventFrame, style='secondary.TCalendar')
         self.entryDateEvent.grid(row=4, column=1, sticky="nswe", pady=5, padx=5)

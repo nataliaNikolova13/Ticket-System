@@ -19,23 +19,23 @@ class User():
 class NormalUser(User):
     def __init__(self, userName, email, password):
         super().__init__(userName, email, password)
-        self.eventsVisited = []
-        self.genresPrefered = []
-        self.eventsLiked = []
+        # self.eventsVisited = []
+        # self.genresPrefered = []
+        # self.eventsLiked = []
         self.role = Role.NormalUser
 
-    def addVisitedEvents(self, event):
-        self.eventsVisited.append(event)  
+    # def addVisitedEvents(self, event):
+    #     self.eventsVisited.append(event)  
 
-    def addPreferedGenre(self, genre):
-        self.genresPrefered.append(genre)
+    # def addPreferedGenre(self, genre):
+    #     self.genresPrefered.append(genre)
 
-    def addLikedEvents(self, liked):
-        self.eventsLiked.append(liked)  
+    # def addLikedEvents(self, liked):
+    #     self.eventsLiked.append(liked)  
 
-    def unlikeEvent(self, event):
-        pass
-        # to add
+    # def unlikeEvent(self, event):
+    #     pass
+    #     # to add
 
     def addUserToDataBase(self):
         connUsers = sqlite3.connect('users.db')
@@ -57,11 +57,11 @@ class NormalUser(User):
 class Organizer(User):
     def __init__(self, userName, email, password):
         super().__init__(userName, email, password)
-        self.eventsOrganized = [] 
+        # self.eventsOrganized = [] 
         self.role = Role.Organizer
 
-    def addEventOrganized(self, event):
-        self.eventsOrganized.append(event)         
+    # def addEventOrganized(self, event):
+    #     self.eventsOrganized.append(event)         
 
     def addUserToDataBase(self):
         connUsers = sqlite3.connect('users.db')
