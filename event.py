@@ -21,7 +21,6 @@ class Category(Enum):
 
 class Event():
     def __init__(self, title, description, location, date, month, year, organizer, numAvailableSeats, category, status, subcategories):
-        # print("constr")
         self.title = title
         self.description = description
         self.location = location
@@ -34,10 +33,7 @@ class Event():
         self.category = category
         self.subcategories = subcategories
         self.status = status
-        # self.photo = photo
 
-    # def addSubcategories(self, subcategory):
-    #     self.subcategories.append(subcategory)
 
     def IsSoldOut(self):
         if self.numAvailableSeats == self.seatsTaken:
@@ -57,7 +53,5 @@ class Event():
         connEvent.commit()
         connEvent.close()
 
-    # def print(self, frame):
-    #     titleLable = Label(frame, text=self.title)
-    #     titleLable.pack()
+    
 

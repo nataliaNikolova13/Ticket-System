@@ -37,10 +37,7 @@ class Layout():
         self.userFrame.pack()
         self.searchFrame = Frame(self.root)
         self.searchFrame.pack()
-        # self.statFrame = Frame(self.root)
-        # self.statFrame.pack()
         self.secondFrame = Frame(self.root)
-        # self.scrollBar()
         self.homePage()
 
     def createMenu(self):
@@ -68,14 +65,12 @@ class Layout():
             menubar.add_cascade(label="Log In",command=self.logIn)
         else:
             profileMenu = Menu(menubar, tearoff=0)
-            # profileMenu.add_command(label="View Profile", command="")
             profileMenu.add_command(label="Log Out", command=self.logOut)
             if self.controler.currentRole.name == "Organizer":
                 
                 menubar.add_cascade(label="Profile", menu=profileMenu,command="")
                 profileMenu.add_command(label="View Profile", command=self.organizerProfileView)
                 profileMenu.add_command(label="Create event", command=self.createEvent)
-                # profileMenu.add_command(label="View statistics", command=self.viewStatPage)
             else:
                 menubar.add_cascade(label="Profile", menu=profileMenu,command="")    
                 profileMenu.add_command(label="View Profile", command=self.userProfileView)
@@ -120,7 +115,6 @@ class Layout():
         self.OrgRadionBtn = Radiobutton(self.logInFrame, text="Log In as an Organizer", variable=radio_var, value=2, font=('Arial', 10))
         self.OrgRadionBtn.grid(row=5, column=0, columnspan=2, sticky="nswe")
 
-        # self.logInBtn = Button(self.logInFrame, width=20, text="Log In", font=('Arial', 10), command=lambda y = "":self.controler.passLogInInfo(self.entryUsername.get(), self.entryPassword.get(), radio_var.get()))
         self.logInBtn = Button(self.logInFrame, width=20, text="Log In", font=('Arial', 10), command=lambda y = "":self.clickLogInBtn(self.entryUsername, self.entryPassword, radio_var))
         self.logInBtn.grid(row=6, column=0, columnspan=2, pady=5)
         
@@ -140,7 +134,6 @@ class Layout():
 
     
     def clickRegisterBtn(self, entryUsername, entryEmail, entryPassword, radio_var):
-        # print("ok")
         userName = entryUsername.get()
         email = entryEmail.get()
         password = entryPassword.get()
@@ -181,7 +174,6 @@ class Layout():
         self.OrgRadionBtn = Radiobutton(self.registrtionFrame, text="Register as an Organizer", variable=radio_var, value=2, font=('Arial', 10))
         self.OrgRadionBtn.grid(row=8, column=0, columnspan=2, sticky="nswe")
 
-        # self.RegisterBtn = Button(self.registrtionFrame, width=20, text="Register", font=('Arial', 10), command=lambda :[self.controler.passRegistrationInfo(self.entryUsername.get(), self.entryEmail.get(), self.entryPassword.get(), radio_var.get()), self.homePage, self.createMenu])
         self.RegisterBtn = Button(self.registrtionFrame, width=20, text="Register", font=('Arial', 10), command=lambda :self.clickRegisterBtn(self.entryUsername, self.entryEmail, self.entryPassword, radio_var))
         self.RegisterBtn.grid(row=9, column=0, columnspan=2, pady=5)
 
@@ -444,8 +436,6 @@ class Layout():
             cat = "The most visited event in Category: " + lst[i]
             lf = tb.LabelFrame(frame, text=cat, width=60, relief="groove", padding=10, style='primary.TLabelframe')
             lf.grid(column=0, row=count-1, padx=15, pady=10, sticky="w")
-            # categoryLable = Label(frame, text=cat, font=('Arial', 12), justify=LEFT)
-            # categoryLable.grid(row=count-1, sticky="w", pady=5, padx=10)
             titleLable = Label(lf, text=result[i][0], font=('Arial', 12), justify=LEFT)
             titleLable.grid(row=count, sticky="w", padx=15)
             t = "Date: " + str(result[i][3]) + '.' + str(result[i][4]) + '.' + str(result[i][5])
@@ -608,14 +598,11 @@ class Layout():
         self.entryMainCategoryEventLable.grid(row=6, column=0, sticky="nswe", pady=5, padx=5)
         options = ["Concert", "Festivals", "Seminars", "Exhibitions", "Charity", "Sport", "Theater"]
         clicked = StringVar()
-        # print(result)
         for option in options:
-            # print(option, result[8])
             if option == result[9]:
                 clicked.set(option)
         drop = OptionMenu(self.editEventFrame, clicked , *options )
         drop.grid(row=6, column=1, sticky="nswe", pady=5, padx=5)
-        # print(clicked.get())
     
         self.entrySubCategoriesLable = Label(self.editEventFrame, text="Enter Subcategories", justify=CENTER, font=('Arial', 10))
         self.entrySubCategoriesLable.grid(row=7, column=0, sticky="nswe", pady=5, padx=5)
@@ -627,12 +614,9 @@ class Layout():
         self.entryStatusEventLable.grid(row=8, column=0, sticky="nswe", pady=5, padx=5)
         optionsStatus = ["Ongoing", "Upcoming"]
         clickedStatus = StringVar()
-        # print(result[11])
         for status in optionsStatus:
-            # print()
             if status == result[11]:
                 clickedStatus.set(status)
-        # clickedStatus.set("Ongoing")
         dropStatus = OptionMenu(self.editEventFrame, clickedStatus , *optionsStatus )
         dropStatus.grid(row=8, column=1, sticky="nswe", pady=5, padx=5)
 
@@ -653,9 +637,7 @@ class Layout():
         category = clicked.get()
         subCategories = entrySubCategories.get()
         status = clickedStatus.get()
-        # print
 
-        # self.controler.passRegistrationInfo(userName, email, password, radio)
         self.controler.passEditEventInfo(title, description, location, date, capacity, category, subCategories, status)
         self.organizerProfileView()
 
@@ -705,11 +687,7 @@ class Layout():
         tLabel = Label(self.secondFrame, text = "You have booked tickets for: ", font=('Arial', 13), justify=LEFT)
         tLabel.grid(row=1, sticky="nw", pady=(0, 10), padx=10)  
 
-        # lf = ttk.LabelFrame(self.secondFrame, text='Ticket')
-        # lf.grid(column=0, row=0, padx=20, pady=20)
 
-        # lblFrame = ttk.LabelFrame(self.secondFrame, text="Ticket", style='primary.TLabelframe') #, style='info.TLabelframe'
-        # lblFrame.grid(column=0, row=2, padx=20, pady=20)
 
         result = self.controler.getAllTicketsByUser()
         count = 2
@@ -799,7 +777,6 @@ class Layout():
         clicked.set("Concert")
         drop = OptionMenu(self.createEventFrame, clicked , *options )
         drop.grid(row=6, column=1, sticky="nswe", pady=5, padx=5)
-        # print(clicked.get())
     
         self.entrySubCategoriesLable = Label(self.createEventFrame, text="Enter Subcategories", justify=CENTER, font=('Arial', 10))
         self.entrySubCategoriesLable.grid(row=7, column=0, sticky="nswe", pady=5, padx=5)
@@ -832,9 +809,7 @@ class Layout():
         category = clicked.get()
         subCategories = entrySubCategories.get()
         status = clickedStatus.get()
-        # print
 
-        # self.controler.passRegistrationInfo(userName, email, password, radio)
         self.controler.passCreateEventInfo(title, description, location, date, capacity, category, subCategories, status)
         self.homePage()
 
@@ -891,7 +866,6 @@ class Layout():
         
         self.startDateEntry = tb.DateEntry(self.secondFrame, style='secondary.TCalendar')
         self.startDateEntry.grid(row=3, column=1, sticky="nswe", pady=5, padx=25)
-        # print(self.startDateEntry.get())
         self.endDateLabel = Label(self.secondFrame, text="End date", justify=CENTER, font=('Arial', 10))
         self.endDateLabel.grid(row=4, column=0, sticky="nswe", pady=5, padx=25)
         self.endDateEntry = tb.DateEntry(self.secondFrame, style='secondary.TCalendar')
@@ -945,7 +919,6 @@ class Layout():
         self.startDateLabel.grid(row=3, column=0, sticky="nswe", pady=5, padx=25)
         self.startDateEntry = tb.DateEntry(self.secondFrame, style='secondary.TCalendar')
         self.startDateEntry.grid(row=3, column=1, sticky="nswe", pady=5, padx=25)
-        # print(self.startDateEntry.get())
         self.endDateLabel = Label(self.secondFrame, text="End date", justify=CENTER, font=('Arial', 10))
         self.endDateLabel.grid(row=4, column=0, sticky="nswe", pady=5, padx=25)
         self.endDateEntry = tb.DateEntry(self.secondFrame, style='secondary.TCalendar')
@@ -977,7 +950,6 @@ class Layout():
         self.orgFrame.destroy()
         self.userFrame.destroy()
         self.searchFrame.destroy()
-        # self.statFrame.destroy()
         
           
         

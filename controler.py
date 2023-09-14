@@ -4,14 +4,12 @@ from users import Role, NormalUser, Organizer
 import sqlite3
 from tkinter import *
 import datetime
-# from tkinter import ttk
 
 
 class Controler():
     def __init__(self):
         self.currentUserLogged = False
         self.currentUser = False
-        # self.currentUser = True
         self.currentCategory = Category.UNKNOWN
         self.currentRole = Role.Unknown
         
@@ -74,7 +72,6 @@ class Controler():
         
         event.addToDataBase()
         self.updateEventStatus()
-        # list = date.split('/')
 
     def passEditEventInfo(self, title, description, location, date, capacity, category, subCategories, status):
         organizer = self.currentUser.userName
@@ -174,6 +171,11 @@ class Controler():
         cursEvent.execute("UPDATE EVENTS SET SeatsTaken=SeatsTaken-1 WHERE (Title = ?)", (title,))
         connTicket.commit()
         connEvent.commit()
+        cursTicket.execute('SELECT numTickets FROM TICKETS WHERE(Username = ? AND Title = ?)', (username, title))
+        result = cursTicket.fetchone()
+        if result[0] == 0:
+            cursTicket.execute('DELETE FROM TICKETS WHERE(Username = ? AND Title = ?)', (username, title))
+            connTicket.commit()
         connTicket.close()
         connEvent.close()
 
@@ -190,7 +192,6 @@ class Controler():
 
         cursEvent.execute('SELECT SeatsTaken FROM EVENTS WHERE (Title = ?)', (title, ))
         numSeats = cursEvent.fetchone()
-        # print(numSeats[0])
         numSeats = numSeats[0]
         cursEvent.execute("UPDATE EVENTS SET SeatsTaken=? WHERE (Title = ?)", (numSeats - numTickets, title))
         connTicket.commit()
@@ -216,7 +217,6 @@ class Controler():
         endDate = datetime.datetime(int(end[2]), int(end[1]), int(end[0]))
         connEvent = sqlite3.connect('events.db')
         cursEvent = connEvent.cursor()
-        # cursEvent.execute('')
         eventsInInterval = []
 
         cursEvent.execute('SELECT * FROM EVENTS')
@@ -466,7 +466,6 @@ class Controler():
                     cursGenres.execute('insert into GENRES VALUES (?, ?, ?)', (buyer, i, 1))
                 else:
                     cursGenres.execute('UPDATE GENRES SET visited=visited+1 WHERE (UserName = ? AND Genre = ?)', (buyer, i))    
-                # cursGenres.execute("insert into GENRES VALUES(?, ?)", (buyer, i, 1))
 
         connGenres.commit()
         connGenres.close()

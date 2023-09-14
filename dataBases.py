@@ -53,8 +53,6 @@ tableEvents = """CREATE TABLE IF NOT EXISTS EVENTS(
 """
 
 
-# cursUsers.execute('DELETE FROM USERS WHERE (UserName = ?)', ("", ))
-# connUsers.commit()
 
 connTicketsBought = sqlite3.connect('tickets.db')
 cursTickets = connTicketsBought.cursor()
