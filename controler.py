@@ -343,7 +343,7 @@ class Controler():
 
         for i in range(0, len(allEventWithGivenGenres)):
             
-            if allEventWithGivenGenres[i][0] not in allVisitedEvents:
+            if allEventWithGivenGenres[i][0] not in allVisitedEvents and allEventWithGivenGenres[i][7] != allEventWithGivenGenres[i][8]:
                 recEvents.append(allEventWithGivenGenres[i])
 
        
